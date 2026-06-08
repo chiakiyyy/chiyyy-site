@@ -11,86 +11,148 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { title, description, pubDate, category, tags } = post.data;
+const { title, description, pubDate, category, tags, thumbnail } = post.data;
 const { Content } = await render(post);
 
 const dateStr = pubDate.toLocaleDateString('ja-JP', {
   year: 'numeric', month: 'long', day: 'numeric'
 });
 
-const categoryColors: Record<string, string> = {
-  'AI': '#4a7c59',
-  '日常': '#7c5c4a',
-  '旅': '#4a5d7c',
-  '開発': '#6b4a7c',
-};
-const catColor = categoryColors[category] || '#666';
+const allPosts = await getCollection("blog");
+const related = allPosts
+  .filter(p => p.id !== post.id && p.data.category === category)
+  .slice(0, 3);
 ---
 
 <Layout title={`${title} | chiyyy.com`} description={description}>
-  <div class="article-wrap">
 
-    <header class="article-header">
-      <span class="article-category" style={`color:${catColor}`}>{category}</span>
-      <h1 class="article-title">{title}</h1>
-      <p class="article-desc">{description}</p>
-      <div class="article-meta">
-        <time>{dateStr}</time>
-        {tags && tags.map(tag => (
-          <span class="tag">#{tag}</span>
-        ))}
-      </div>
-    </header>
-
-    <div class="article-divider"></div>
-
-    <div class="article-body">
-      <Content />
-    </div>
-
-    <div class="article-divider"></div>
-
-    <footer class="article-footer">
-      <a href="/" class="back-link">← 記事一覧へ</a>
-    </footer>
-
+  <!-- Article Hero -->
+  <div class="article-hero">
+    {thumbnail
+      ? <img src={thumbnail} alt={title} class="hero-img" />
+      : <div class="hero-blank"><span>{category}</span></div>
+    }
   </div>
+
+  <div class="article-outer">
+    <!-- Main -->
+    <article class="article-main">
+      <header class="article-header">
+        <p class="article-cat">{category}</p>
+        <h1 class="article-title">{title}</h1>
+        <div class="article-meta">
+          <time>{dateStr}</time>
+          {tags && tags.map(tag => <span class="tag">{tag}</span>)}
+        </div>
+      </header>
+
+      <div class="article-body">
+        <Content />
+      </div>
+
+      <footer class="article-footer">
+        <a href="/" class="back-link">← 記事一覧へ戻る</a>
+      </footer>
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="article-sidebar">
+      <div class="sidebar-block">
+        <p class="sidebar-label">CATEGORY</p>
+        <nav class="sidebar-cats">
+          <a href="/category/ai">AI</a>
+          <a href="/category/life">日常</a>
+          <a href="/category/travel">旅</a>
+        </nav>
+      </div>
+
+      {related.length > 0 && (
+        <div class="sidebar-block">
+          <p class="sidebar-label">RELATED</p>
+          <div class="sidebar-related">
+            {related.map(p => {
+              const s = p.id.replace(/\.md$/, '');
+              return (
+                <a href={`/blog/${s}/`} class="related-item">
+                  <div class="related-thumb">
+                    {p.data.thumbnail
+                      ? <img src={p.data.thumbnail} alt={p.data.title} loading="lazy" />
+                      : <div class="thumb-blank-sm"><span>{p.data.category}</span></div>
+                    }
+                  </div>
+                  <div>
+                    <p class="related-cat">{p.data.category}</p>
+                    <p class="related-title">{p.data.title}</p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </aside>
+  </div>
+
 </Layout>
 
 <style>
-.article-wrap {
-  max-width: 740px;
+.article-hero {
+  width: 100%;
+  height: clamp(200px, 35vw, 420px);
+  overflow: hidden;
+  background: #ede9e3;
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-blank {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-blank span {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 3rem;
+  color: #c4bdb4;
+  letter-spacing: 0.1em;
+}
+
+.article-outer {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 56px 24px 80px;
+  padding: 56px 32px 80px;
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 64px;
+  align-items: start;
 }
 
-.article-header {
-  margin-bottom: 40px;
-}
+/* Header */
+.article-header { margin-bottom: 48px; padding-bottom: 36px; border-bottom: 1px solid var(--border); }
 
-.article-category {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 16px;
+.article-cat {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 14px;
 }
 
 .article-title {
-  font-family: var(--font-serif);
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-  font-weight: 700;
-  line-height: 1.5;
-  margin-bottom: 16px;
-  color: var(--black);
-}
-
-.article-desc {
-  font-size: 1rem;
-  color: var(--gray);
-  line-height: 1.8;
+  font-family: var(--font-jp-serif);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 400;
+  line-height: 1.6;
   margin-bottom: 20px;
+  color: var(--text);
 }
 
 .article-meta {
@@ -98,119 +160,179 @@ const catColor = categoryColors[category] || '#666';
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  font-size: 0.78rem;
-  color: var(--gray-light);
+  font-size: 0.7rem;
+  color: var(--text-light);
+  letter-spacing: 0.06em;
 }
 
 .tag {
-  background: var(--bg-soft);
+  background: #ede9e3;
   padding: 3px 10px;
-  border-radius: 2px;
-  font-size: 0.72rem;
-  color: var(--gray);
+  font-size: 0.62rem;
+  color: var(--text-mid);
+  letter-spacing: 0.06em;
 }
 
-.article-divider {
-  height: 1px;
-  background: var(--border);
-  margin: 40px 0;
-}
-
+/* Body */
 .article-body {
-  font-size: 1rem;
-  line-height: 2;
-  color: var(--gray-dark);
+  font-size: 0.95rem;
+  line-height: 2.1;
+  color: var(--text);
+  font-weight: 300;
 }
 
 .article-body :global(h2) {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 48px 0 20px;
-  padding-bottom: 10px;
+  font-family: var(--font-jp-serif);
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin: 52px 0 20px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
-  color: var(--black);
+  color: var(--text);
+  letter-spacing: 0.04em;
 }
 
 .article-body :global(h3) {
-  font-family: var(--font-serif);
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-family: var(--font-jp-serif);
+  font-size: 1rem;
+  font-weight: 400;
   margin: 36px 0 14px;
-  color: var(--black);
+  color: var(--text);
 }
 
-.article-body :global(p) {
-  margin-bottom: 1.6em;
+.article-body :global(p) { margin-bottom: 1.8em; }
+
+.article-body :global(ul), .article-body :global(ol) {
+  padding-left: 1.4em;
+  margin-bottom: 1.8em;
 }
 
-.article-body :global(ul),
-.article-body :global(ol) {
-  padding-left: 1.5em;
-  margin-bottom: 1.6em;
-}
-
-.article-body :global(li) {
-  margin-bottom: 0.5em;
-}
+.article-body :global(li) { margin-bottom: 0.6em; }
 
 .article-body :global(blockquote) {
-  border-left: 3px solid var(--accent);
+  border-left: 2px solid var(--accent);
   padding: 12px 20px;
-  margin: 24px 0;
-  background: var(--bg-soft);
-  color: var(--gray);
+  margin: 28px 0;
+  background: #f2ede6;
+  color: var(--text-mid);
   font-style: italic;
 }
 
 .article-body :global(code) {
-  background: var(--bg-soft);
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 0.88em;
+  background: #ede9e3;
+  padding: 2px 7px;
+  font-size: 0.85em;
   font-family: 'Courier New', monospace;
 }
 
 .article-body :global(pre) {
-  background: #1a1a1a;
-  color: #e8e8e8;
-  padding: 20px 24px;
-  border-radius: 4px;
+  background: #2a2520;
+  color: #e8e2da;
+  padding: 24px 28px;
   overflow-x: auto;
-  margin-bottom: 1.6em;
-  font-size: 0.88em;
-  line-height: 1.7;
+  margin: 28px 0;
+  font-size: 0.85em;
+  line-height: 1.8;
 }
 
-.article-body :global(pre code) {
-  background: none;
-  padding: 0;
-  color: inherit;
-}
+.article-body :global(pre code) { background: none; padding: 0; color: inherit; }
 
-.article-body :global(img) {
-  border-radius: 4px;
-  margin: 24px 0;
-}
+.article-body :global(img) { margin: 32px 0; }
 
 .article-body :global(a) {
-  color: var(--black);
-  text-decoration: underline;
-  text-decoration-color: var(--accent);
-  text-underline-offset: 3px;
+  color: var(--text);
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 1px;
+  transition: opacity 0.2s;
 }
 
-.article-footer {
-  display: flex;
-  align-items: center;
-}
+.article-body :global(a:hover) { opacity: 0.6; }
+
+.article-footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); }
 
 .back-link {
-  font-size: 0.85rem;
-  color: var(--gray);
-  letter-spacing: 0.04em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--text-mid);
   transition: color 0.2s;
 }
 
-.back-link:hover { color: var(--black); }
+.back-link:hover { color: var(--text); }
+
+/* Sidebar */
+.sidebar-block { margin-bottom: 40px; }
+
+.sidebar-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--text-light);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.sidebar-cats { display: flex; flex-direction: column; gap: 0; }
+
+.sidebar-cats a {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--text-mid);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+
+.sidebar-cats a:hover { color: var(--text); }
+
+.sidebar-related { display: flex; flex-direction: column; gap: 16px; }
+
+.related-item { display: flex; gap: 12px; align-items: flex-start; }
+
+.related-thumb {
+  width: 72px;
+  height: 54px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #ede9e3;
+}
+
+.related-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.thumb-blank-sm {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb-blank-sm span {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: #c4bdb4;
+}
+
+.related-cat {
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin-bottom: 3px;
+}
+
+.related-title {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--text-mid);
+  transition: color 0.2s;
+}
+
+.related-item:hover .related-title { color: var(--text); }
+
+@media (max-width: 900px) {
+  .article-outer { grid-template-columns: 1fr; gap: 48px; padding: 40px 20px 60px; }
+  .article-sidebar { border-top: 1px solid var(--border); padding-top: 40px; }
+}
 </style>

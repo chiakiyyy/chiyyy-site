@@ -1,7 +1,6 @@
 ---
 const { title = "chiyyy.com", description = "日常・ライフスタイルのブログ" } = Astro.props;
 ---
-
 <!doctype html>
 <html lang="ja">
 <head>
@@ -12,20 +11,24 @@ const { title = "chiyyy.com", description = "日常・ライフスタイルの�
   <title>{title}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet" />
 </head>
-
 <body>
 
 <header class="site-header">
-  <div class="header-inner">
-    <a href="/" class="site-logo">chiyyy.com</a>
-    <nav class="global-nav">
+  <div class="header-top">
+    <nav class="header-nav left">
       <a href="/">HOME</a>
-      <a href="/category/ai">AI</a>
       <a href="/category/life">日常</a>
       <a href="/category/travel">旅</a>
+    </nav>
+    <a href="/" class="site-logo">chiyyy</a>
+    <nav class="header-nav right">
+      <a href="/category/ai">AI</a>
       <a href="/about">ABOUT</a>
+      <button class="search-btn" aria-label="検索">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
     </nav>
     <button class="hamburger" id="hamburger" aria-label="メニュー">
       <span></span><span></span><span></span>
@@ -33,27 +36,29 @@ const { title = "chiyyy.com", description = "日常・ライフスタイルの�
   </div>
 </header>
 
-<nav class="mobile-nav" id="mobile-nav">
+<div class="mobile-nav" id="mobile-nav">
   <a href="/">HOME</a>
-  <a href="/category/ai">AI</a>
   <a href="/category/life">日常</a>
   <a href="/category/travel">旅</a>
+  <a href="/category/ai">AI</a>
   <a href="/about">ABOUT</a>
-</nav>
+</div>
 
-<main class="main-content">
+<main>
   <slot />
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
-    <p class="footer-logo">chiyyy.com</p>
-    <p class="footer-desc">日常・ライフスタイルのブログ</p>
+    <p class="footer-logo">chiyyy</p>
     <nav class="footer-nav">
       <a href="/">HOME</a>
+      <a href="/category/life">日常</a>
+      <a href="/category/travel">旅</a>
+      <a href="/category/ai">AI</a>
       <a href="/about">ABOUT</a>
     </nav>
-    <p class="copyright">© 2026 chiyyy.com</p>
+    <p class="footer-copy">© 2026 chiyyy.com</p>
   </div>
 </footer>
 
@@ -70,166 +75,187 @@ const { title = "chiyyy.com", description = "日常・ライフスタイルの�
 </script>
 
 <style is:global>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --black: #1a1a1a;
-    --gray-dark: #333;
-    --gray: #666;
-    --gray-light: #999;
-    --border: #e8e8e8;
-    --bg: #fff;
-    --bg-soft: #f8f7f5;
-    --accent: #c8a96e;
-    --accent-dark: #a88a4e;
-    --font-sans: 'Noto Sans JP', sans-serif;
-    --font-serif: 'Noto Serif JP', serif;
-  }
+:root {
+  --bg: #f7f4ef;
+  --bg-white: #ffffff;
+  --text: #2a2520;
+  --text-mid: #6b6460;
+  --text-light: #9c9490;
+  --border: #e2ddd8;
+  --accent: #8b7355;
+  --font-en: 'Cormorant Garamond', Georgia, serif;
+  --font-jp: 'Noto Sans JP', sans-serif;
+  --font-jp-serif: 'Noto Serif JP', serif;
+}
 
-  html { font-size: 16px; }
+html { font-size: 16px; scroll-behavior: smooth; }
 
-  body {
-    font-family: var(--font-sans);
-    color: var(--black);
-    background: var(--bg);
-    line-height: 1.8;
-    -webkit-font-smoothing: antialiased;
-  }
+body {
+  font-family: var(--font-jp);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
 
-  a { color: inherit; text-decoration: none; }
-  img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; height: auto; display: block; }
 
-  /* ===== HEADER ===== */
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(255,255,255,0.96);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border);
-  }
+/* ===== HEADER ===== */
+.site-header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
 
-  .header-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.header-top {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 60px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
 
-  .site-logo {
-    font-family: var(--font-serif);
-    font-size: 1.25rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--black);
-  }
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
 
-  .global-nav {
-    display: flex;
-    gap: 32px;
-  }
+.header-nav.right { justify-content: flex-end; }
 
-  .global-nav a {
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    color: var(--gray);
-    transition: color 0.2s;
-  }
+.header-nav a {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--text-mid);
+  font-weight: 400;
+  transition: color 0.2s;
+}
 
-  .global-nav a:hover { color: var(--black); }
+.header-nav a:hover { color: var(--text); }
 
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-  }
+.search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-mid);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
 
-  .hamburger span {
-    display: block;
-    width: 22px;
-    height: 1.5px;
-    background: var(--black);
-    transition: all 0.3s;
-  }
+.search-btn:hover { color: var(--text); }
 
-  .hamburger.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-  .hamburger.active span:nth-child(2) { opacity: 0; }
-  .hamburger.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.site-logo {
+  font-family: var(--font-en);
+  font-size: 1.7rem;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  text-align: center;
+  line-height: 1;
+}
 
-  .mobile-nav {
-    display: none;
-    flex-direction: column;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 24px 24px;
-    gap: 0;
-  }
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: auto;
+}
 
-  .mobile-nav.open { display: flex; }
+.hamburger span {
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--text);
+  transition: all 0.3s;
+}
 
-  .mobile-nav a {
-    padding: 14px 0;
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    border-bottom: 1px solid var(--border);
-    color: var(--gray-dark);
-  }
+.hamburger.active span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-  /* ===== MAIN ===== */
-  .main-content {
-    min-height: calc(100vh - 64px - 200px);
-  }
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 32px 20px;
+}
 
-  /* ===== FOOTER ===== */
-  .site-footer {
-    background: var(--black);
-    color: #aaa;
-    padding: 48px 24px;
-    text-align: center;
-    margin-top: 80px;
-  }
+.mobile-nav.open { display: flex; }
 
-  .footer-inner { max-width: 600px; margin: 0 auto; }
+.mobile-nav a {
+  padding: 12px 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-mid);
+}
 
-  .footer-logo {
-    font-family: var(--font-serif);
-    font-size: 1.2rem;
-    color: #fff;
-    margin-bottom: 8px;
-  }
+/* ===== FOOTER ===== */
+.site-footer {
+  background: var(--text);
+  color: #a0998f;
+  padding: 56px 32px 40px;
+  margin-top: 100px;
+}
 
-  .footer-desc { font-size: 0.85rem; margin-bottom: 24px; }
+.footer-inner {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
 
-  .footer-nav {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    margin-bottom: 24px;
-  }
+.footer-logo {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-size: 1.8rem;
+  color: #e8e2da;
+  margin-bottom: 24px;
+  letter-spacing: 0.06em;
+}
 
-  .footer-nav a {
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-    color: #aaa;
-    transition: color 0.2s;
-  }
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px 28px;
+  margin-bottom: 28px;
+}
 
-  .footer-nav a:hover { color: #fff; }
+.footer-nav a {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: #a0998f;
+  transition: color 0.2s;
+}
 
-  .copyright { font-size: 0.78rem; }
+.footer-nav a:hover { color: #e8e2da; }
 
-  /* ===== RESPONSIVE ===== */
-  @media (max-width: 768px) {
-    .global-nav { display: none; }
-    .hamburger { display: flex; }
-  }
+.footer-copy {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+  .header-nav.left, .header-nav.right { display: none; }
+  .header-top { grid-template-columns: 1fr auto; }
+  .hamburger { display: flex; }
+  .site-logo { text-align: left; }
+}
 </style>

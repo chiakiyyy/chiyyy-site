@@ -1,109 +1,175 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import PostCard from "../../components/PostCard.astro";
-import CategoryNav from "../../components/CategoryNav.astro";
 import { getCollection } from "astro:content";
 
 const categoryMap: Record<string, string> = {
-  ai: 'AI',
-  life: '日常',
-  travel: '旅',
-  dev: '開発',
+  ai: 'AI', life: '日常', travel: '旅', dev: '開発',
 };
 
 export async function getStaticPaths() {
-  const slugs = ['ai', 'life', 'travel', 'dev'];
-  return slugs.map(slug => ({ params: { slug } }));
+  return ['ai', 'life', 'travel', 'dev'].map(slug => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;
-const categoryLabel = categoryMap[slug] || slug;
+const label = categoryMap[slug] || slug;
 
 const allPosts = await getCollection("blog");
 const posts = allPosts
-  .filter(p => p.data.category === categoryLabel)
+  .filter(p => p.data.category === label)
   .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 ---
 
-<Layout title={`${categoryLabel} | chiyyy.com`} description={`${categoryLabel}カテゴリの記事一覧`}>
-
-  <section class="cat-hero">
-    <div class="cat-hero-inner">
+<Layout title={`${label} | chiyyy.com`}>
+  <div class="cat-page">
+    <header class="cat-header">
       <p class="cat-label">CATEGORY</p>
-      <h1 class="cat-title">{categoryLabel}</h1>
-      <p class="cat-count">{posts.length}件の記事</p>
-      <CategoryNav active={slug} />
+      <h1 class="cat-title">{label}</h1>
+      <p class="cat-count">{posts.length} 記事</p>
+    </header>
+
+    <div class="cat-inner">
+      {posts.length > 0 ? (
+        <div class="cat-grid">
+          {posts.map(post => {
+            const s = post.id.replace(/\.md$/, '');
+            const d = post.data.pubDate.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            return (
+              <article class="cat-card">
+                <a href={`/blog/${s}/`}>
+                  <div class="cat-thumb">
+                    {post.data.thumbnail
+                      ? <img src={post.data.thumbnail} alt={post.data.title} loading="lazy" />
+                      : <div class="thumb-blank"><span>{post.data.category}</span></div>
+                    }
+                  </div>
+                  <p class="card-cat">{post.data.category}</p>
+                  <h2 class="cat-card-title">{post.data.title}</h2>
+                  <p class="card-desc">{post.data.description}</p>
+                  <time class="card-date">{d}</time>
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <p class="empty">まだ記事がありません。</p>
+      )}
     </div>
-  </section>
-
-  <div class="page-wrap">
-    {posts.length > 0 ? (
-      <div class="posts-grid">
-        {posts.map(post => <PostCard post={post} />)}
-      </div>
-    ) : (
-      <p class="empty">まだ記事がありません。</p>
-    )}
   </div>
-
 </Layout>
 
 <style>
-.cat-hero {
-  background: var(--bg-soft);
-  border-bottom: 1px solid var(--border);
-  padding: 56px 24px 40px;
-}
+.cat-page { }
 
-.cat-hero-inner {
-  max-width: 1200px;
+.cat-header {
+  border-bottom: 1px solid var(--border);
+  padding: 56px 32px 36px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
 .cat-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--gray-light);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--text-light);
   margin-bottom: 8px;
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
 }
 
 .cat-title {
-  font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 700;
+  font-family: var(--font-jp-serif);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 400;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+
+.cat-count { font-size: 0.72rem; color: var(--text-light); letter-spacing: 0.08em; }
+
+.cat-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 32px 80px;
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px 24px;
+}
+
+.cat-card a { display: block; }
+
+.cat-thumb {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #ede9e3;
+  margin-bottom: 14px;
+}
+
+.cat-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.cat-card:hover .cat-thumb img { transform: scale(1.04); }
+
+.thumb-blank {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb-blank span {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  color: #c4bdb4;
+}
+
+.card-cat {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.cat-card-title {
+  font-family: var(--font-jp-serif);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--text);
   margin-bottom: 8px;
 }
 
-.cat-count {
-  font-size: 0.82rem;
-  color: var(--gray);
-  margin-bottom: 24px;
+.card-desc {
+  font-size: 0.78rem;
+  color: var(--text-mid);
+  line-height: 1.8;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.page-wrap {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 48px 24px;
+.card-date { font-size: 0.65rem; color: var(--text-light); letter-spacing: 0.08em; }
+.empty { text-align: center; padding: 80px 0; color: var(--text-light); font-size: 0.85rem; }
+
+@media (max-width: 768px) {
+  .cat-header { padding: 40px 20px 28px; }
+  .cat-inner { padding: 32px 20px 60px; }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-.empty {
-  color: var(--gray);
-  text-align: center;
-  padding: 80px 0;
-}
-
-@media (max-width: 960px) {
-  .posts-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 640px) {
-  .page-wrap { padding: 32px 16px; }
-  .posts-grid { grid-template-columns: 1fr; gap: 16px; }
+@media (max-width: 480px) {
+  .cat-grid { grid-template-columns: 1fr; }
 }
 </style>
