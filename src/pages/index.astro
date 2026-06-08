@@ -1,24 +1,49 @@
 ---
+import Layout from "../layouts/Layout.astro";
+import PostCard from "../components/PostCard.astro";
+
+import { getCollection } from "astro:content";
+import CategoryNav from "../components/CategoryNav.astro";
+
+
+const posts = await getCollection("blog");
+
 ---
 
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>chiyyy.com</title>
-  </head>
+<Layout title="chiyyy.com">
 
-  <body>
-    <main>
-      <h1>Chiaki Kozawa</h1>
+  <section class="hero">
+    <h1>記事が主役のブログ</h1>
 
-      <p>AI Engineer / Builder</p>
+    <p>
+      AI・開発・仕事術・読書・日記について発信しています。
+    </p>
 
-      <p>ブログ準備中です。</p>
+    <CategoryNav />
 
-      <p>
-        Cloudflare Pages + Astro で構築中 🚀
-      </p>
-    </main>
-  </body>
-</html>
+  </section>
+
+  <section>
+    {
+      posts.map((post) => (
+        <PostCard post={post} />
+      ))
+    }
+  </section>
+
+</Layout>
+
+<style>
+.hero{
+  margin-bottom:80px;
+}
+
+.hero h1{
+  font-size:3rem;
+  margin-bottom:16px;
+}
+
+.hero p{
+  color:#666;
+}
+</style>
