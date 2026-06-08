@@ -1,0 +1,109 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PostCard from "../../components/PostCard.astro";
+import CategoryNav from "../../components/CategoryNav.astro";
+import { getCollection } from "astro:content";
+
+const categoryMap: Record<string, string> = {
+  ai: 'AI',
+  life: '日常',
+  travel: '旅',
+  dev: '開発',
+};
+
+export async function getStaticPaths() {
+  const slugs = ['ai', 'life', 'travel', 'dev'];
+  return slugs.map(slug => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const categoryLabel = categoryMap[slug] || slug;
+
+const allPosts = await getCollection("blog");
+const posts = allPosts
+  .filter(p => p.data.category === categoryLabel)
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+---
+
+<Layout title={`${categoryLabel} | chiyyy.com`} description={`${categoryLabel}カテゴリの記事一覧`}>
+
+  <section class="cat-hero">
+    <div class="cat-hero-inner">
+      <p class="cat-label">CATEGORY</p>
+      <h1 class="cat-title">{categoryLabel}</h1>
+      <p class="cat-count">{posts.length}件の記事</p>
+      <CategoryNav active={slug} />
+    </div>
+  </section>
+
+  <div class="page-wrap">
+    {posts.length > 0 ? (
+      <div class="posts-grid">
+        {posts.map(post => <PostCard post={post} />)}
+      </div>
+    ) : (
+      <p class="empty">まだ記事がありません。</p>
+    )}
+  </div>
+
+</Layout>
+
+<style>
+.cat-hero {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  padding: 56px 24px 40px;
+}
+
+.cat-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cat-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--gray-light);
+  margin-bottom: 8px;
+}
+
+.cat-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.cat-count {
+  font-size: 0.82rem;
+  color: var(--gray);
+  margin-bottom: 24px;
+}
+
+.page-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.empty {
+  color: var(--gray);
+  text-align: center;
+  padding: 80px 0;
+}
+
+@media (max-width: 960px) {
+  .posts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .page-wrap { padding: 32px 16px; }
+  .posts-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+</style>

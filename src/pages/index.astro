@@ -1,49 +1,173 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import PostCard from "../components/PostCard.astro";
-
-import { getCollection } from "astro:content";
 import CategoryNav from "../components/CategoryNav.astro";
+import { getCollection } from "astro:content";
 
-
-const posts = await getCollection("blog");
-
+const allPosts = await getCollection("blog");
+const posts = allPosts.sort((a, b) =>
+  new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+);
+const featuredPost = posts.find(p => p.data.featured) || posts[0];
+const restPosts = posts.filter(p => p !== featuredPost);
 ---
 
-<Layout title="chiyyy.com">
+<Layout title="chiyyy.com" description="日常・ライフスタイルのブログ">
 
-  <section class="hero">
-    <h1>記事が主役のブログ</h1>
-
-    <p>
-      AI・開発・仕事術・読書・日記について発信しています。
-    </p>
-
-    <CategoryNav />
-
+  <!-- Hero -->
+  <section class="site-hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">chiyyy.com</h1>
+      <p class="hero-sub">日常・ライフスタイル・旅・AIのこと</p>
+      <CategoryNav active="" />
+    </div>
   </section>
 
-  <section>
-    {
-      posts.map((post) => (
+  <div class="page-wrap">
+
+    <!-- Featured -->
+    {featuredPost && (
+      <section class="featured-section">
+        <div class="section-label">PICK UP</div>
+        <PostCard post={featuredPost} featured={true} />
+      </section>
+    )}
+
+    <!-- Divider -->
+    <div class="divider-line">
+      <span>LATEST</span>
+    </div>
+
+    <!-- Grid -->
+    <section class="posts-grid">
+      {restPosts.map(post => (
         <PostCard post={post} />
-      ))
-    }
-  </section>
+      ))}
+    </section>
+
+  </div>
 
 </Layout>
 
 <style>
-.hero{
-  margin-bottom:80px;
+.site-hero {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  padding: 64px 24px 48px;
 }
 
-.hero h1{
-  font-size:3rem;
-  margin-bottom:16px;
+.hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.hero p{
-  color:#666;
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.hero-sub {
+  font-size: 0.9rem;
+  color: var(--gray);
+  margin-bottom: 28px;
+  letter-spacing: 0.06em;
+}
+
+.page-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+
+.featured-section {
+  margin-bottom: 56px;
+}
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--gray-light);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--black);
+  display: inline-block;
+}
+
+.featured-section .post-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.featured-section .card-thumb {
+  aspect-ratio: auto;
+  min-height: 280px;
+}
+
+.featured-section .card-body {
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.featured-section .card-title {
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+.featured-section .card-desc {
+  -webkit-line-clamp: 3;
+  font-size: 0.88rem;
+}
+
+.divider-line {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  color: var(--gray-light);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.divider-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .posts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .featured-section .post-card {
+    grid-template-columns: 1fr;
+  }
+  .featured-section .card-thumb {
+    min-height: 220px;
+    aspect-ratio: 16/9;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-hero { padding: 40px 16px 32px; }
+  .page-wrap { padding: 32px 16px; }
+  .posts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 </style>

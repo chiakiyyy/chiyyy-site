@@ -1,0 +1,162 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="About | chiyyy.com" description="chiyyy.comについて">
+
+  <div class="about-wrap">
+
+    <header class="about-header">
+      <p class="about-label">ABOUT</p>
+      <h1 class="about-title">このブログについて</h1>
+    </header>
+
+    <div class="about-divider"></div>
+
+    <div class="about-body">
+
+      <div class="profile-block">
+        <div class="profile-avatar">C</div>
+        <div class="profile-info">
+          <h2 class="profile-name">chiyyy</h2>
+          <p class="profile-bio">日常のこと、旅のこと、気になるAIのことなどを書いています。</p>
+        </div>
+      </div>
+
+      <div class="about-divider"></div>
+
+      <div class="about-section">
+        <h3>このブログについて</h3>
+        <p>日常・ライフスタイル・旅・AIなど、興味のあることをゆるく書いているブログです。</p>
+        <p>Astro + Cloudflare Pages で構築しています。できるだけシンプルに、記事が読みやすい場所にしたいと思っています。</p>
+      </div>
+
+      <div class="about-section">
+        <h3>カテゴリ</h3>
+        <ul class="cat-list">
+          <li><strong>AI</strong> — 気になるツール・サービスのこと</li>
+          <li><strong>日常</strong> — 暮らしのこと、習慣のこと</li>
+          <li><strong>旅</strong> — 旅先の記録、散歩の記録</li>
+          <li><strong>開発</strong> — ブログ構築やプロダクトのこと</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="about-divider"></div>
+
+    <footer class="about-footer">
+      <a href="/" class="back-link">← 記事一覧へ</a>
+    </footer>
+
+  </div>
+
+</Layout>
+
+<style>
+.about-wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+
+.about-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--gray-light);
+  margin-bottom: 8px;
+}
+
+.about-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
+}
+
+.about-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 40px 0;
+}
+
+.profile-block {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--black);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.profile-bio {
+  font-size: 0.9rem;
+  color: var(--gray);
+  line-height: 1.7;
+}
+
+.about-section {
+  margin-bottom: 40px;
+}
+
+.about-section h3 {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.about-section p {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--gray-dark);
+  margin-bottom: 1em;
+}
+
+.cat-list {
+  padding-left: 1.2em;
+  list-style: none;
+}
+
+.cat-list li {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--gray-dark);
+  margin-bottom: 8px;
+  padding-left: 0;
+}
+
+.cat-list li::before {
+  content: '— ';
+  color: var(--gray-light);
+}
+
+.back-link {
+  font-size: 0.85rem;
+  color: var(--gray);
+  transition: color 0.2s;
+}
+
+.back-link:hover { color: var(--black); }
+</style>

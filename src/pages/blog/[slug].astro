@@ -1,0 +1,216 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map(post => ({
+    params: { slug: post.id.replace(/\.md$/, '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, category, tags } = post.data;
+const { Content } = await render(post);
+
+const dateStr = pubDate.toLocaleDateString('ja-JP', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+
+const categoryColors: Record<string, string> = {
+  'AI': '#4a7c59',
+  '日常': '#7c5c4a',
+  '旅': '#4a5d7c',
+  '開発': '#6b4a7c',
+};
+const catColor = categoryColors[category] || '#666';
+---
+
+<Layout title={`${title} | chiyyy.com`} description={description}>
+  <div class="article-wrap">
+
+    <header class="article-header">
+      <span class="article-category" style={`color:${catColor}`}>{category}</span>
+      <h1 class="article-title">{title}</h1>
+      <p class="article-desc">{description}</p>
+      <div class="article-meta">
+        <time>{dateStr}</time>
+        {tags && tags.map(tag => (
+          <span class="tag">#{tag}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="article-divider"></div>
+
+    <div class="article-body">
+      <Content />
+    </div>
+
+    <div class="article-divider"></div>
+
+    <footer class="article-footer">
+      <a href="/" class="back-link">← 記事一覧へ</a>
+    </footer>
+
+  </div>
+</Layout>
+
+<style>
+.article-wrap {
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+
+.article-header {
+  margin-bottom: 40px;
+}
+
+.article-category {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.article-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  color: var(--black);
+}
+
+.article-desc {
+  font-size: 1rem;
+  color: var(--gray);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--gray-light);
+}
+
+.tag {
+  background: var(--bg-soft);
+  padding: 3px 10px;
+  border-radius: 2px;
+  font-size: 0.72rem;
+  color: var(--gray);
+}
+
+.article-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 40px 0;
+}
+
+.article-body {
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--gray-dark);
+}
+
+.article-body :global(h2) {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 48px 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--black);
+}
+
+.article-body :global(h3) {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 36px 0 14px;
+  color: var(--black);
+}
+
+.article-body :global(p) {
+  margin-bottom: 1.6em;
+}
+
+.article-body :global(ul),
+.article-body :global(ol) {
+  padding-left: 1.5em;
+  margin-bottom: 1.6em;
+}
+
+.article-body :global(li) {
+  margin-bottom: 0.5em;
+}
+
+.article-body :global(blockquote) {
+  border-left: 3px solid var(--accent);
+  padding: 12px 20px;
+  margin: 24px 0;
+  background: var(--bg-soft);
+  color: var(--gray);
+  font-style: italic;
+}
+
+.article-body :global(code) {
+  background: var(--bg-soft);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.88em;
+  font-family: 'Courier New', monospace;
+}
+
+.article-body :global(pre) {
+  background: #1a1a1a;
+  color: #e8e8e8;
+  padding: 20px 24px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-bottom: 1.6em;
+  font-size: 0.88em;
+  line-height: 1.7;
+}
+
+.article-body :global(pre code) {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+.article-body :global(img) {
+  border-radius: 4px;
+  margin: 24px 0;
+}
+
+.article-body :global(a) {
+  color: var(--black);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+.article-footer {
+  display: flex;
+  align-items: center;
+}
+
+.back-link {
+  font-size: 0.85rem;
+  color: var(--gray);
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+
+.back-link:hover { color: var(--black); }
+</style>

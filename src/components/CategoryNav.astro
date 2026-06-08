@@ -1,28 +1,46 @@
-<nav class="categories">
-    <a href="#">AI</a>
-    <a href="#">開発</a>
-    <a href="#">仕事術</a>
-    <a href="#">読書</a>
-    <a href="#">日記</a>
-  </nav>
-  
-  <style>
-  .categories{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-bottom:60px;
-  }
-  
-  .categories a{
-    padding:8px 14px;
-    border:1px solid #ddd;
-    border-radius:999px;
-    font-size:0.9rem;
-  }
-  
-  .categories a:hover{
-    background:#f5f5f5;
-  }
-  </style>
-  
+---
+const { active = '' } = Astro.props;
+const categories = [
+  { label: 'すべて', slug: '' },
+  { label: 'AI', slug: 'ai' },
+  { label: '日常', slug: 'life' },
+  { label: '旅', slug: 'travel' },
+];
+---
+
+<nav class="cat-nav">
+  {categories.map(c => (
+    <a
+      href={c.slug ? `/category/${c.slug}` : '/'}
+      class={`cat-link ${active === c.slug ? 'active' : ''}`}
+    >
+      {c.label}
+    </a>
+  ))}
+</nav>
+
+<style>
+.cat-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cat-link {
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--gray);
+  transition: all 0.2s;
+}
+
+.cat-link:hover,
+.cat-link.active {
+  background: var(--black);
+  border-color: var(--black);
+  color: #fff;
+}
+</style>
