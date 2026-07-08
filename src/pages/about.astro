@@ -13,6 +13,10 @@ import Layout from "../layouts/Layout.astro";
 
     <div class="about-divider"></div>
 
+    <figure class="about-hero">
+      <img src="/images/about-hero.jpg" alt="朝日のさす畑と、植えたばかりの苗" width="1200" height="1500" loading="lazy" />
+    </figure>
+
     <div class="about-body">
 
       <div class="profile-block">
@@ -94,6 +98,19 @@ import Layout from "../layouts/Layout.astro";
   height: 1px;
   background: var(--border);
   margin: 40px 0;
+}
+
+.about-hero {
+  margin: 0 0 40px;
+}
+
+.about-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 2px;
 }
 
 .profile-block {
