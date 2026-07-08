@@ -2,13 +2,13 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="About | chiyyy.com" description="chiyyy.comについて">
+<Layout title="About | chiyyy.com" description="千亜紀（chiyyy）の自己紹介。富山で暮らしながら、料理の動画と卵と日記を続けています。">
 
   <div class="about-wrap">
 
     <header class="about-header">
       <p class="about-label">ABOUT</p>
-      <h1 class="about-title">このブログについて</h1>
+      <h1 class="about-title">自己紹介</h1>
     </header>
 
     <div class="about-divider"></div>
@@ -18,27 +18,43 @@ import Layout from "../layouts/Layout.astro";
       <div class="profile-block">
         <div class="profile-avatar">C</div>
         <div class="profile-info">
-          <h2 class="profile-name">chiyyy</h2>
-          <p class="profile-bio">日常のこと、旅のこと、気になるAIのことなどを書いています。</p>
+          <h2 class="profile-name">chiyyy（千亜紀）</h2>
+          <p class="profile-bio">富山で暮らす、卵屋の嫁。料理と畑と日記。</p>
         </div>
       </div>
 
       <div class="about-divider"></div>
 
       <div class="about-section">
-        <h3>このブログについて</h3>
-        <p>日常・ライフスタイル・旅・AIなど、興味のあることをゆるく書いているブログです。</p>
-        <p>Astro + Cloudflare Pages で構築しています。できるだけシンプルに、記事が読みやすい場所にしたいと思っています。</p>
+        <h3>はじめまして</h3>
+        <p>千亜紀です。富山で、夫と小さな子どもと暮らしています。</p>
+        <p>平日は会社勤め。朝4時に起きて、自分の時間をすこし確保してから1日が始まります。</p>
+        <p>夫の実家は卵の農場をやっていて、私はいわゆる「卵屋の嫁」です。気づいたら、冷蔵庫にはいつも卵がある生活になりました。</p>
       </div>
 
       <div class="about-section">
-        <h3>カテゴリ</h3>
+        <h3>ここまでの話</h3>
+        <p>もともとは東京で、ファッションデザインの仕事をしていました。</p>
+        <p>そのあと独学でWebの世界に入って、ディレクションもコーディングもデザインも広告も、ひととおり手を動かしてきました。いまもフリーでサイトを作ったりしています。</p>
+        <p>2024年に富山へ。移住というより、暮らしの拠点がこっちになった、という感覚です。</p>
+        <p>畑を始めました。夏はきゅうりが巨大化します。</p>
+      </div>
+
+      <div class="about-section">
+        <h3>いまやっていること</h3>
         <ul class="cat-list">
-          <li><strong>AI</strong> — 気になるツール・サービスのこと</li>
-          <li><strong>日常</strong> — 暮らしのこと、習慣のこと</li>
-          <li><strong>旅</strong> — 旅先の記録、散歩の記録</li>
-          <li><strong>開発</strong> — ブログ構築やプロダクトのこと</li>
+          <li>節約と発酵と卵のレシピを、<a href="https://www.youtube.com/@chiyyysanpo" target="_blank" rel="noopener">動画で投稿しています</a></li>
+          <li>実家の卵を、ちいさく販売しています</li>
+          <li>このブログでは、日記を書いています</li>
         </ul>
+        <p class="section-note">どれも別々のことをやっているようで、ぜんぶ同じ暮らしから出てきたものです。</p>
+      </div>
+
+      <div class="about-section">
+        <h3>このブログについて</h3>
+        <p>その日あったことを、そのまま書く場所です。</p>
+        <p>うまくいった日も、料理に失敗した日も書きます。役に立つ情報はあまりないかもしれませんが、富山のすみっこの、ある家の暮らしの記録として読んでもらえたらうれしいです。</p>
+        <p>また書きます。</p>
       </div>
 
     </div>
@@ -137,6 +153,7 @@ import Layout from "../layouts/Layout.astro";
 .cat-list {
   padding-left: 1.2em;
   list-style: none;
+  margin-bottom: 1em;
 }
 
 .cat-list li {
@@ -150,6 +167,19 @@ import Layout from "../layouts/Layout.astro";
 .cat-list li::before {
   content: '— ';
   color: var(--gray-light);
+}
+
+.cat-list a {
+  color: var(--gray-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+
+.cat-list a:hover { color: var(--black); }
+
+.section-note {
+  font-size: 0.9rem;
 }
 
 .back-link {
