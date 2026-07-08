@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
   return posts.map(post => ({
     params: { slug: post.id.replace(/\.md$/, '') },
     props: { post },
@@ -18,7 +18,7 @@ const dateStr = pubDate.toLocaleDateString('ja-JP', {
   year: 'numeric', month: 'long', day: 'numeric'
 });
 
-const allPosts = await getCollection("blog");
+const allPosts = await getCollection("blog", ({ data }) => !data.draft);
 const related = allPosts
   .filter(p => p.id !== post.id && p.data.category === category)
   .slice(0, 3);
