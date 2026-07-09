@@ -209,6 +209,16 @@ const related = allPosts
 
 .article-body :global(li) { margin-bottom: 0.6em; }
 
+.article-body :global(mark) {
+  background: linear-gradient(transparent 55%, #ffe08a 55%);
+  padding: 0 2px;
+  color: inherit;
+}
+
+.article-body :global(mark.pink) {
+  background: linear-gradient(transparent 55%, #ffc4d6 55%);
+}
+
 .article-body :global(blockquote) {
   border-left: 2px solid var(--accent);
   padding: 12px 20px;
