@@ -4,7 +4,7 @@ description: "富山で暮らすちーの日記ブログ、はじめました。
 pubDate: 2026-06-08
 category: "日記"
 tags: ["ブログ", "日記"]
-thumbnail: "/images/about-hero.jpg"
+thumbnail: "/images/thumb-hatake.jpg"
 featured: true
 ---
 
