@@ -2,7 +2,7 @@
 title: "1ヶ月、自転車通勤してみた。富山で子育て中の主婦のリアルな感想"
 description: "片道7km、クロスバイクで1ヶ月通勤してみた正直な記録。雨の日は？汗は？痩せた？お金は？これから自転車通勤を考えてる人へ、検索じゃわからないリアルな声を書きました。"
 pubDate: 2026-07-08
-category: "日常"
+category: "くらし"
 tags: ["自転車通勤", "クロスバイク", "富山", "暮らし"]
 thumbnail: "/images/thumb-bicycle.jpg"
 featured: true

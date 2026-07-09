@@ -2,7 +2,7 @@
 title: "はじめまして。ブログはじめました"
 description: "富山で暮らすちーの日記ブログ、はじめました。ごはんのこと、畑のこと、日々のこと。"
 pubDate: 2026-06-08
-category: "日記"
+category: "くらし"
 tags: ["ブログ", "日記"]
 thumbnail: "/images/thumb-hatake.jpg"
 featured: true
