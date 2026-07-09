@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 
 const categoryMap: Record<string, string> = {
-  ai: 'AI', life: '日常', travel: '旅', dev: '開発',
+  life: '日常', travel: '旅', dev: '開発',
 };
 
 export async function getStaticPaths() {
