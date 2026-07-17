@@ -6,8 +6,34 @@ const allPosts = await getCollection("blog", ({ data }) => !data.draft);
 const posts = allPosts.sort((a, b) =>
   new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
 );
-const featuredPosts = posts.slice(0, 2);
-const latestPosts = posts.slice(2);
+
+// PICK UP（特集）: featured フラグ優先。足りなければ新着で補う
+const featuredFlagged = posts.filter(p => p.data.featured);
+const pickup = (featuredFlagged.length >= 2 ? featuredFlagged : posts).slice(0, 2);
+
+// メイン一覧
+const latestPosts = posts;
+
+// 人気記事ランキング（現状は featured + 新着の暫定。将来 GA 連携で自動化可）
+const ranking = [...posts]
+  .sort((a, b) => {
+    const fa = a.data.featured ? 1 : 0;
+    const fb = b.data.featured ? 1 : 0;
+    if (fa !== fb) return fb - fa;
+    return new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime();
+  })
+  .slice(0, 5);
+
+// カテゴリ（件数付き）
+const catMap: Record<string, string> = { 'くらし': 'kurashi', 'たべる': 'taberu' };
+const catCounts: Record<string, number> = {};
+posts.forEach(p => { catCounts[p.data.category] = (catCounts[p.data.category] || 0) + 1; });
+const categories = Object.keys(catMap)
+  .filter(label => catCounts[label])
+  .map(label => ({ label, slug: catMap[label], count: catCounts[label] }));
+
+const fmt = (d: Date) => d.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
+const slugOf = (p: typeof posts[number]) => p.id.replace(/\.md$/, '');
 ---
 
 <Layout title="chiyyy.com" description="富山で暮らす、ちーの日記ブログ。ごはん、畑、日々のこと。">
@@ -19,14 +45,8 @@ const latestPosts = posts.slice(2);
     </div>
     <div class="hero-ticker">
       <div class="ticker-inner">
-        {posts.map(p => (
-          <a href={`/blog/${p.id.replace(/\.md$/, '')}/`} class="ticker-item">
-            <span class="ticker-cat">{p.data.category}</span>
-            <span class="ticker-title">{p.data.title}</span>
-          </a>
-        ))}
-        {posts.map(p => (
-          <a href={`/blog/${p.id.replace(/\.md$/, '')}/`} class="ticker-item" aria-hidden="true">
+        {[...posts, ...posts].map((p, i) => (
+          <a href={`/blog/${slugOf(p)}/`} class="ticker-item" aria-hidden={i >= posts.length ? "true" : undefined}>
             <span class="ticker-cat">{p.data.category}</span>
             <span class="ticker-title">{p.data.title}</span>
           </a>
@@ -35,70 +55,100 @@ const latestPosts = posts.slice(2);
     </div>
   </section>
 
-  <!-- NEW POSTS -->
-  <section class="section">
-    <div class="section-inner">
-      <div class="section-head">
-        <span class="section-label">NEW POST</span>
+  <!-- PICK UP -->
+  <section class="pickup">
+    <div class="pickup-inner">
+      <div class="section-head"><span class="section-label">PICK UP</span></div>
+      <div class="pickup-grid">
+        {pickup.map((post) => (
+          <article class="pickup-card">
+            <a href={`/blog/${slugOf(post)}/`}>
+              <div class="pickup-thumb">
+                {post.data.thumbnail
+                  ? <img src={post.data.thumbnail} alt={post.data.title} loading="lazy" />
+                  : <div class="thumb-blank"><span>{post.data.category}</span></div>}
+                <span class="thumb-cat">{post.data.category}</span>
+              </div>
+              <div class="pickup-body">
+                <h2 class="pickup-title">{post.data.title}</h2>
+                <p class="pickup-desc">{post.data.description}</p>
+                <time class="card-date">{fmt(post.data.pubDate)}</time>
+              </div>
+            </a>
+          </article>
+        ))}
       </div>
-      <div class="featured-grid">
-        {featuredPosts.map((post) => {
-          const slug = post.id.replace(/\.md$/, '');
-          const dateStr = post.data.pubDate.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
-          return (
-            <article class="featured-card">
-              <a href={`/blog/${slug}/`} class="featured-card-link">
-                <div class="featured-thumb">
+    </div>
+  </section>
+
+  <!-- MAIN + SIDEBAR -->
+  <div class="home-layout">
+
+    <!-- Main -->
+    <main class="home-main">
+      <div class="section-head"><span class="section-label">LATEST</span></div>
+      <div class="post-grid">
+        {latestPosts.map((post) => (
+          <article class="post-card">
+            <a href={`/blog/${slugOf(post)}/`}>
+              <div class="post-thumb">
+                {post.data.thumbnail
+                  ? <img src={post.data.thumbnail} alt={post.data.title} loading="lazy" />
+                  : <div class="thumb-blank"><span>{post.data.category}</span></div>}
+                <span class="thumb-cat">{post.data.category}</span>
+              </div>
+              <h3 class="post-title">{post.data.title}</h3>
+              <time class="card-date">{fmt(post.data.pubDate)}</time>
+            </a>
+          </article>
+        ))}
+      </div>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="home-sidebar">
+
+      <div class="widget">
+        <p class="widget-title"><span>RANKING</span>人気記事</p>
+        <ol class="ranking">
+          {ranking.map((post, i) => (
+            <li class="rank-item">
+              <a href={`/blog/${slugOf(post)}/`}>
+                <span class={`rank-num rank-${i + 1}`}>{i + 1}</span>
+                <span class="rank-thumb">
                   {post.data.thumbnail
                     ? <img src={post.data.thumbnail} alt={post.data.title} loading="lazy" />
-                    : <div class="thumb-blank"><span>{post.data.category}</span></div>
-                  }
-                </div>
-                <div class="featured-body">
-                  <p class="card-cat">{post.data.category}</p>
-                  <h2 class="card-title">{post.data.title}</h2>
-                  <p class="card-desc">{post.data.description}</p>
-                  <time class="card-date">{dateStr}</time>
-                </div>
+                    : <span class="thumb-blank sm"><span>{post.data.category}</span></span>}
+                </span>
+                <span class="rank-title">{post.data.title}</span>
               </a>
-            </article>
-          );
-        })}
+            </li>
+          ))}
+        </ol>
       </div>
-    </div>
-  </section>
 
-  <!-- LATEST -->
-  {latestPosts.length > 0 && (
-    <section class="section">
-      <div class="section-inner">
-        <div class="section-head">
-          <span class="section-label">LATEST</span>
-        </div>
-        <div class="latest-grid">
-          {latestPosts.map((post) => {
-            const slug = post.id.replace(/\.md$/, '');
-            const dateStr = post.data.pubDate.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
-            return (
-              <article class="latest-card">
-                <a href={`/blog/${slug}/`}>
-                  <div class="latest-thumb">
-                    {post.data.thumbnail
-                      ? <img src={post.data.thumbnail} alt={post.data.title} loading="lazy" />
-                      : <div class="thumb-blank"><span>{post.data.category}</span></div>
-                    }
-                  </div>
-                  <p class="card-cat">{post.data.category}</p>
-                  <h3 class="latest-title">{post.data.title}</h3>
-                  <time class="card-date">{dateStr}</time>
-                </a>
-              </article>
-            );
-          })}
-        </div>
+      <div class="widget">
+        <p class="widget-title"><span>CATEGORY</span>カテゴリ</p>
+        <ul class="cat-list">
+          {categories.map(c => (
+            <li>
+              <a href={`/category/${c.slug}`}>
+                <span>{c.label}</span>
+                <span class="cat-num">{c.count}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-    </section>
-  )}
+
+      <div class="widget">
+        <p class="widget-title"><span>ABOUT</span>このブログについて</p>
+        <p class="about-mini">富山で暮らす、卵屋の嫁。料理と畑と日記を綴っています。</p>
+        <a href="/about" class="about-link">プロフィールを見る →</a>
+      </div>
+
+    </aside>
+  </div>
 
 </Layout>
 
@@ -106,18 +156,8 @@ const latestPosts = posts.slice(2);
 /* ===== HERO ===== */
 .hero { background: var(--bg-white); }
 
-.hero-img-wrap {
-  width: 100%;
-  height: clamp(240px, 40vw, 480px);
-  overflow: hidden;
-}
-
-.hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 35%;
-}
+.hero-img-wrap { width: 100%; height: clamp(240px, 40vw, 480px); overflow: hidden; }
+.hero-img { width: 100%; height: 100%; object-fit: cover; object-position: center 35%; }
 
 .hero-ticker {
   border-top: 1px solid var(--border);
@@ -126,207 +166,136 @@ const latestPosts = posts.slice(2);
   background: var(--bg);
   padding: 10px 0;
 }
+.ticker-inner { display: flex; gap: 0; white-space: nowrap; animation: ticker 30s linear infinite; width: max-content; }
+.ticker-item {
+  display: inline-flex; align-items: center; gap: 8px; padding: 0 32px;
+  font-size: 0.7rem; color: var(--text-mid); letter-spacing: 0.06em;
+  border-right: 1px solid var(--border); transition: color 0.2s;
+}
+.ticker-item:hover { color: var(--text); }
+.ticker-cat {
+  font-size: 0.6rem; letter-spacing: 0.14em; background: var(--accent);
+  color: #fff; font-weight: 500; padding: 2px 8px; border-radius: 2px;
+}
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-.ticker-inner {
-  display: flex;
-  gap: 0;
-  white-space: nowrap;
-  animation: ticker 30s linear infinite;
-  width: max-content;
+/* ===== SECTION HEAD ===== */
+.section-head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.section-label {
+  font-family: var(--font-en); font-size: 0.8rem; letter-spacing: 0.22em;
+  color: var(--accent); font-style: italic; font-weight: 600; white-space: nowrap;
 }
 
-.ticker-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 32px;
-  font-size: 0.7rem;
-  color: var(--text-mid);
-  letter-spacing: 0.06em;
-  border-right: 1px solid var(--border);
+/* ===== PICK UP ===== */
+.pickup { padding: 48px 0 0; }
+.pickup-inner { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+.pickup-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+.pickup-card { background: var(--bg-white); }
+.pickup-card a { display: block; }
+.pickup-thumb { position: relative; aspect-ratio: 16/10; overflow: hidden; background: var(--border); }
+.pickup-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.pickup-card:hover .pickup-thumb img { transform: scale(1.04); }
+.pickup-body { padding: 18px 4px 0; }
+.pickup-title {
+  font-family: var(--font-jp-serif); font-size: 1.15rem; font-weight: 400;
+  line-height: 1.6; color: var(--text); margin-bottom: 10px;
+}
+.pickup-desc {
+  font-size: 0.82rem; color: var(--text-mid); line-height: 1.9; margin-bottom: 12px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* ===== LAYOUT ===== */
+.home-layout {
+  max-width: 1100px; margin: 0 auto; padding: 56px 32px 80px;
+  display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start;
+}
+
+/* ===== POST GRID (main) ===== */
+.post-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 36px 28px; }
+.post-card a { display: block; }
+.post-thumb { position: relative; aspect-ratio: 4/3; overflow: hidden; background: var(--border); margin-bottom: 14px; }
+.post-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.post-card:hover .post-thumb img { transform: scale(1.04); }
+.post-title {
+  font-family: var(--font-jp-serif); font-size: 0.98rem; font-weight: 400;
+  line-height: 1.7; color: var(--text); margin: 4px 0 8px;
+}
+
+/* category label on thumb */
+.thumb-cat {
+  position: absolute; left: 0; bottom: 0;
+  font-size: 0.62rem; letter-spacing: 0.14em; background: var(--accent);
+  color: #fff; font-weight: 500; padding: 4px 12px;
+}
+
+/* ===== THUMB BLANK ===== */
+.thumb-blank {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #ede9e3;
+}
+.thumb-blank span { font-family: var(--font-en); font-style: italic; font-size: 1.6rem; color: #c4bdb4; letter-spacing: 0.1em; }
+.thumb-blank.sm span { font-size: 0.7rem; }
+
+.card-date { font-size: 0.65rem; color: var(--text-light); letter-spacing: 0.08em; }
+
+/* ===== SIDEBAR ===== */
+.home-sidebar { display: flex; flex-direction: column; gap: 40px; }
+.widget-title {
+  display: flex; align-items: baseline; gap: 10px;
+  font-family: var(--font-jp-serif); font-size: 0.95rem; color: var(--text);
+  padding-bottom: 12px; margin-bottom: 18px; border-bottom: 2px solid var(--accent);
+}
+.widget-title span {
+  font-family: var(--font-en); font-style: italic; font-size: 0.7rem;
+  letter-spacing: 0.18em; color: var(--accent); font-weight: 600;
+}
+
+/* ranking */
+.ranking { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.rank-item a { display: flex; align-items: center; gap: 12px; }
+.rank-num {
+  flex-shrink: 0; width: 22px; text-align: center;
+  font-family: var(--font-en); font-size: 1.1rem; font-weight: 600; color: var(--text-light);
+}
+.rank-num.rank-1 { color: #c9a227; }
+.rank-num.rank-2 { color: #9a9a9a; }
+.rank-num.rank-3 { color: #b08d57; }
+.rank-thumb { flex-shrink: 0; width: 60px; height: 46px; overflow: hidden; background: var(--border); }
+.rank-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.rank-thumb .thumb-blank { background: #ede9e3; }
+.rank-title {
+  font-size: 0.76rem; line-height: 1.6; color: var(--text-mid);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   transition: color 0.2s;
 }
+.rank-item a:hover .rank-title { color: var(--text); }
 
-.ticker-item:hover { color: var(--text); }
-
-.ticker-cat {
-  font-size: 0.6rem;
-  letter-spacing: 0.14em;
-  background: var(--text-mid);
-  color: #fff;
-  font-weight: 500;
-  padding: 2px 8px;
-  border-radius: 2px;
+/* category list */
+.cat-list { list-style: none; }
+.cat-list li { border-bottom: 1px solid var(--border); }
+.cat-list a {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 2px; font-size: 0.82rem; color: var(--text-mid); transition: color 0.2s;
 }
+.cat-list a:hover { color: var(--text); }
+.cat-num { font-family: var(--font-en); font-size: 0.75rem; color: var(--text-light); }
 
-@keyframes ticker {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* ===== SECTION ===== */
-.section { padding: 56px 0 0; }
-
-.section-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 32px;
-}
-
-.section-head {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 28px;
-}
-
-.section-head::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
-.section-label {
-  font-family: var(--font-en);
-  font-size: 0.75rem;
-  letter-spacing: 0.22em;
-  color: var(--text-light);
-  font-style: italic;
-  white-space: nowrap;
-}
-
-/* ===== FEATURED GRID ===== */
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2px;
-  background: var(--border);
-  border: 1px solid var(--border);
-}
-
-.featured-card { background: var(--bg-white); }
-
-.featured-card-link { display: block; }
-
-.featured-thumb {
-  aspect-ratio: 16/10;
-  overflow: hidden;
-  background: var(--border);
-}
-
-.featured-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.featured-card:hover .featured-thumb img { transform: scale(1.04); }
-
-.thumb-blank {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ede9e3;
-}
-
-.thumb-blank span {
-  font-family: var(--font-en);
-  font-style: italic;
-  font-size: 1.6rem;
-  color: #c4bdb4;
-  letter-spacing: 0.1em;
-}
-
-.featured-body {
-  padding: 20px 24px 28px;
-}
-
-/* ===== LATEST GRID ===== */
-.latest-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px 24px;
-}
-
-.latest-card a { display: block; }
-
-.latest-thumb {
-  aspect-ratio: 4/3;
-  overflow: hidden;
-  background: var(--border);
-  margin-bottom: 14px;
-}
-
-.latest-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.latest-card:hover .latest-thumb img { transform: scale(1.04); }
-
-.latest-title {
-  font-family: var(--font-jp-serif);
-  font-size: 0.92rem;
-  font-weight: 400;
-  line-height: 1.7;
-  color: var(--text);
-  margin: 6px 0 8px;
-}
-
-/* ===== SHARED CARD PARTS ===== */
-.card-cat {
-  display: inline-block;
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  background: var(--text-mid);
-  color: #fff;
-  font-weight: 500;
-  padding: 3px 10px;
-  border-radius: 2px;
-  margin-bottom: 6px;
-}
-
-.card-title {
-  font-family: var(--font-jp-serif);
-  font-size: 1.05rem;
-  font-weight: 400;
-  line-height: 1.7;
-  color: var(--text);
-  margin-bottom: 10px;
-}
-
-.card-desc {
-  font-size: 0.8rem;
-  color: var(--text-mid);
-  line-height: 1.8;
-  margin-bottom: 12px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-date {
-  font-size: 0.65rem;
-  color: var(--text-light);
-  letter-spacing: 0.08em;
-}
+/* about mini */
+.about-mini { font-size: 0.8rem; line-height: 1.9; color: var(--text-mid); margin-bottom: 12px; font-weight: 300; }
+.about-link { font-size: 0.78rem; color: var(--accent); letter-spacing: 0.04em; }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .section-inner { padding: 0 20px; }
-  .featured-grid { grid-template-columns: 1fr; }
-  .latest-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 900px) {
+  .home-layout { grid-template-columns: 1fr; gap: 56px; }
+  .home-sidebar { border-top: 1px solid var(--border); padding-top: 8px; }
 }
-
+@media (max-width: 768px) {
+  .pickup-inner { padding: 0 20px; }
+  .home-layout { padding: 44px 20px 64px; }
+  .pickup-grid { grid-template-columns: 1fr; gap: 24px; }
+}
 @media (max-width: 480px) {
-  .latest-grid { grid-template-columns: 1fr; gap: 24px; }
-  .section { padding: 40px 0 0; }
+  .post-grid { grid-template-columns: 1fr; gap: 28px; }
 }
 </style>
