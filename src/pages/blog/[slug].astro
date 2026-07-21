@@ -26,14 +26,6 @@ const related = allPosts
 
 <Layout title={`${title} | chiyyy.com`} description={description}>
 
-  <!-- Article Hero -->
-  <div class="article-hero">
-    {thumbnail
-      ? <img src={thumbnail} alt={title} class="hero-img" />
-      : <div class="hero-blank"><span>{category}</span></div>
-    }
-  </div>
-
   <div class="article-outer">
     <!-- Main -->
     <article class="article-main">
@@ -45,6 +37,12 @@ const related = allPosts
           {tags && tags.map(tag => <span class="tag">{tag}</span>)}
         </div>
       </header>
+
+      {thumbnail && (
+        <figure class="article-thumb">
+          <img src={thumbnail} alt={title} width="700" height="450" loading="lazy" />
+        </figure>
+      )}
 
       <div class="article-body">
         <Content />
@@ -60,8 +58,8 @@ const related = allPosts
       <div class="sidebar-block">
         <p class="sidebar-label">CATEGORY</p>
         <nav class="sidebar-cats">
-          <a href="/category/life">日常</a>
-          <a href="/category/travel">旅</a>
+          <a href="/category/kurashi">くらし</a>
+          <a href="/category/taberu">たべる</a>
         </nav>
       </div>
 
@@ -95,33 +93,19 @@ const related = allPosts
 </Layout>
 
 <style>
-.article-hero {
+.article-thumb {
   width: 100%;
-  height: clamp(200px, 35vw, 420px);
+  max-width: 700px;
+  aspect-ratio: 700 / 450;
   overflow: hidden;
   background: #ede9e3;
+  margin: 0 0 40px;
 }
 
-.hero-img {
+.article-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.hero-blank {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-blank span {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 3rem;
-  color: #c4bdb4;
-  letter-spacing: 0.1em;
 }
 
 .article-outer {
