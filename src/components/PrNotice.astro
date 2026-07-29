@@ -1,0 +1,51 @@
+---
+/**
+ * 広告表記（記事の本文より上に置くこと）。
+ * 景品表示法の指定告示（いわゆるステマ規制／2023年10月施行）に対応するための表示。
+ *
+ * 記事レイアウト側:
+ *   <PrNotice frontmatter={entry.data} />
+ *
+ * 表示条件は needsPrNotice() 参照。pr: true か affiliates が1件以上で出ます。
+ */
+import { needsPrNotice } from '../lib/affiliates';
+
+interface Props {
+  frontmatter: { pr?: boolean; affiliates?: string[] };
+  /** 条件判定を無視して常に表示する */
+  force?: boolean;
+}
+
+const { frontmatter, force = false } = Astro.props;
+const show = force || needsPrNotice(frontmatter);
+---
+
+{
+  show && (
+    <p class="pr-notice">
+      <span class="pr-notice__tag">PR</span>
+      この記事にはアフィリエイト広告（プロモーション）を含みます。
+    </p>
+  )
+}
+
+<style>
+  .pr-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+    margin-block: 0 1.75rem;
+    font-size: 0.76rem;
+    line-height: 1.7;
+    opacity: 0.6;
+  }
+
+  .pr-notice__tag {
+    flex: none;
+    padding: 0.1em 0.45em;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    font-size: 0.9em;
+    letter-spacing: 0.06em;
+  }
+</style>

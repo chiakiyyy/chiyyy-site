@@ -1,0 +1,38 @@
+{
+  "oisix-otameshi": {
+    "label": "オイシックスのお試しセット",
+    "desc": "初回限定。中身は季節で変わります。",
+    "asp": "A8",
+    "url": "https://example.a8.net/REPLACE_ME",
+    "fallbackUrl": "https://www.oisix.com/",
+    "reward": "1800",
+    "startedAt": "2026-07-01",
+    "endsAt": "",
+    "status": "active",
+    "note": "サンプル。実際のリンクに差し替えてください"
+  },
+  "hario-kettle": {
+    "label": "HARIO V60 ドリップケトル・ヴォーノ",
+    "desc": "毎朝これでコーヒーを淹れています。",
+    "asp": "moshimo",
+    "url": "https://example.moshimo.com/REPLACE_ME",
+    "fallbackUrl": "",
+    "reward": "料率2%",
+    "startedAt": "2026-07-01",
+    "endsAt": "",
+    "status": "active",
+    "note": "サンプル。もしもかんたんリンクのURLに差し替え"
+  },
+  "sample-ended": {
+    "label": "終了した案件のサンプル",
+    "desc": "",
+    "asp": "other",
+    "url": "https://example.com/REPLACE_ME",
+    "fallbackUrl": "https://example.com/",
+    "reward": "",
+    "startedAt": "2026-01-01",
+    "endsAt": "2026-06-30",
+    "status": "ended",
+    "note": "status を ended にすると、全記事でアフィリリンクが自動的に外れます"
+  }
+}

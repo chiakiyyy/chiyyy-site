@@ -1,0 +1,61 @@
+---
+/**
+ * 本文中に差し込むインラインリンク（MDX導入後、記事本文内で使う用）。
+ * 使い方（.mdx）: <AffLink id="hario-kettle" />
+ *                <AffLink id="hario-kettle" label="このケトル" />
+ *
+ * 案件が終了・停止していると、自動で通常リンク（fallbackUrl）か
+ * リンクなしのテキストに切り替わります。
+ */
+import { resolveAff } from '../lib/affiliates';
+
+interface Props {
+  id: string;
+  label?: string;
+}
+
+const { id, label } = Astro.props;
+const aff = resolveAff(id, label);
+
+if (!aff.found) {
+  console.warn(`[affiliates] 未登録の案件ID: "${id}"`);
+}
+---
+
+{
+  aff.href ? (
+    <a class="aff-link" href={aff.href} rel={aff.rel} target="_blank">
+      {aff.label}
+      {aff.live && <span class="aff-link__mark" aria-label="広告リンク">PR</span>}
+    </a>
+  ) : (
+    <span class="aff-link aff-link--plain">{aff.label}</span>
+  )
+}
+
+<style>
+  .aff-link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .aff-link__mark {
+    display: inline-block;
+    margin-inline-start: 0.35em;
+    padding: 0.05em 0.35em;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    font-size: 0.65em;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    vertical-align: 0.15em;
+    opacity: 0.55;
+    text-decoration: none;
+  }
+
+  .aff-link--plain {
+    text-decoration: none;
+  }
+</style>
