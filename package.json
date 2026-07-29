@@ -9,7 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:affiliates": "node scripts/check-affiliates.mjs",
+    "check:affiliates:fetch": "node scripts/check-affiliates.mjs --fetch"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

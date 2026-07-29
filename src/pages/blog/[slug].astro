@@ -1,5 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import PrNotice from "../../components/PrNotice.astro";
+import AffCard from "../../components/AffCard.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -44,9 +46,19 @@ const related = allPosts
         </figure>
       )}
 
+      <PrNotice frontmatter={post.data} />
+
       <div class="article-body">
         <Content />
       </div>
+
+      {post.data.affiliates && post.data.affiliates.length > 0 && (
+        <div class="article-affiliates">
+          {post.data.affiliates.map((id) => (
+            <AffCard id={id} />
+          ))}
+        </div>
+      )}
 
       <footer class="article-footer">
         <a href="/" class="back-link">← 記事一覧へ戻る</a>
