@@ -2,7 +2,7 @@
 title: "東京から富山に移住して2年。正直な感想を書いてみる"
 description: "三軒茶屋から富山へ。移住して2年たった今、よかったこと・恋しいこと・イメージと違ったことを正直に書きました。移住を迷ってる人へ。"
 pubDate: 2026-07-10
-category: "くらし"
+category: "地方移住・暮らし"
 tags: ["移住", "富山", "東京", "暮らし"]
 thumbnail: "/images/thumb-toyama.jpg"
 featured: true

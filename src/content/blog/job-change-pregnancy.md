@@ -2,7 +2,7 @@
 title: "転職の1週間前に妊娠がわかった。入社直後の妊娠、どうなった話"
 description: "転職の1週間前に妊娠が発覚。試用期間中の報告、育休手当がもらえなかった理由、つわりでの通勤まで、転職と妊娠が重なった体験を正直に書きました。妊活と転職どちらを優先するか迷っている人へ。"
 pubDate: 2026-07-13
-category: "くらし"
+category: "お金・キャリア"
 tags: ["妊娠", "転職", "働き方"]
 thumbnail: "/images/thumb-pregnancy.webp"
 draft: false

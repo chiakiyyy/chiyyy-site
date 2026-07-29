@@ -3,11 +3,15 @@ import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 
 const categoryMap: Record<string, string> = {
-  kurashi: 'くらし', taberu: 'たべる',
+  'money-career': 'お金・キャリア',
+  'local-life': '地方移住・暮らし',
+  'parenting': '子育て・共働き',
+  'food': '食・卵・富山',
+  'health': '健康・その他',
 };
 
 export async function getStaticPaths() {
-  return ['kurashi', 'taberu'].map(slug => ({ params: { slug } }));
+  return ['money-career', 'local-life', 'parenting', 'food', 'health'].map(slug => ({ params: { slug } }));
 }
 
 const { slug } = Astro.params;

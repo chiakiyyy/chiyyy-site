@@ -25,7 +25,13 @@ const ranking = [...posts]
   .slice(0, 5);
 
 // カテゴリ（件数付き）
-const catMap: Record<string, string> = { 'くらし': 'kurashi', 'たべる': 'taberu' };
+const catMap: Record<string, string> = {
+  'お金・キャリア': 'money-career',
+  '地方移住・暮らし': 'local-life',
+  '子育て・共働き': 'parenting',
+  '食・卵・富山': 'food',
+  '健康・その他': 'health',
+};
 const catCounts: Record<string, number> = {};
 posts.forEach(p => { catCounts[p.data.category] = (catCounts[p.data.category] || 0) + 1; });
 const categories = Object.keys(catMap)
