@@ -23,6 +23,18 @@
     "status": "active",
     "note": "サンプル。もしもかんたんリンクのURLに差し替え"
   },
+  "mynavi-careerelation": {
+    "label": "マイナビキャリレーション",
+    "desc": "未経験から事務職への転職をサポートする無期雇用派遣サービス。20代女性向け。",
+    "asp": "アクセストレード",
+    "url": "",
+    "fallbackUrl": "https://mynavi-cr.jp/",
+    "reward": "4395",
+    "startedAt": "2026-07-29",
+    "endsAt": "",
+    "status": "paused",
+    "note": "アクセストレード提携申請中(2026-07-29)。承認されトラッキングリンクが発行されたらurlに設定しstatusをactiveに変更。成果地点:Webエントリー登録完了(広告主新規・20代女性)。承認頻度は月1回、承認率は参考値で約50%。"
+  },
   "sample-ended": {
     "label": "終了した案件のサンプル",
     "desc": "",
