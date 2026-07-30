@@ -14,6 +14,7 @@
     "check:affiliates:fetch": "node scripts/check-affiliates.mjs --fetch"
   },
   "dependencies": {
+    "@astrojs/mdx": "^6.0.3",
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^6.4.4"
   }

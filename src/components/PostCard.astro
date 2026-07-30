@@ -13,7 +13,7 @@ const categoryColors: Record<string, string> = {
 };
 const catColor = categoryColors[category] || '#666';
 
-const slug = post.id.replace(/\.md$/, '');
+const slug = post.id.replace(/\.mdx?$/, '');
 ---
 
 <article class={`post-card ${featured ? 'featured' : ''}`}>

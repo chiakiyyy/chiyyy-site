@@ -39,7 +39,7 @@ const categories = Object.keys(catMap)
   .map(label => ({ label, slug: catMap[label], count: catCounts[label] }));
 
 const fmt = (d: Date) => d.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
-const slugOf = (p: typeof posts[number]) => p.id.replace(/\.md$/, '');
+const slugOf = (p: typeof posts[number]) => p.id.replace(/\.mdx?$/, '');
 ---
 
 <Layout title="chiyyy.com" description="富山で暮らす、ちーの日記ブログ。ごはん、畑、日々のこと。">
