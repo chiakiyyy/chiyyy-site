@@ -47,9 +47,9 @@
     "status": "active",
     "note": "もしもアフィリエイトで提携承認済み(2026-07-29)。承認条件:23〜35歳・希望勤務地(東京/千葉/神奈川/埼玉)・経験or希望職種が営業/販売サービス/エンジニア/マーケティング/管理系職種のいずれかで、面談実施完了。",
     "banner": {
-      "src": "https://image.moshimo.com/af-img/6249/000000094550.jpg",
-      "width": 600,
-      "height": 600,
+      "src": "/images/banner-type-women-agent-wide.png",
+      "width": 1774,
+      "height": 887,
       "impressionPixel": "https://i.moshimo.com/af/i/impression?a_id=5718712&p_id=7541&pc_id=21774&pl_id=94550"
     }
   },
