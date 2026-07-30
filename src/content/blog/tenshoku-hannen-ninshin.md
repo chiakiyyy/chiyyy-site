@@ -4,6 +4,7 @@ description: "転職して半年で妊娠が発覚。転職したてでも産休
 pubDate: 2026-07-28
 category: "お金・キャリア"
 tags: ["転職", "妊娠", "産休", "育休", "失業保険"]
+thumbnail: "/images/thumb-tenshoku-hannen-ninshin.jpg"
 draft: false
 affiliates: ["type-women-agent"]
 ---
