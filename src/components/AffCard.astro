@@ -18,7 +18,26 @@ const aff = passed ?? (id ? resolveAff(id) : null);
 ---
 
 {
-  aff && aff.found && (
+  aff && aff.found && aff.href && aff.banner && (
+    <div class="aff-card aff-card--banner">
+      <a href={aff.href} rel={aff.rel} target="_blank">
+        <img
+          src={aff.banner.src}
+          width={aff.banner.width}
+          height={aff.banner.height}
+          alt={aff.label}
+          loading="lazy"
+        />
+      </a>
+      {aff.banner.impressionPixel && (
+        <img class="aff-card__pixel" src={aff.banner.impressionPixel} width="1" height="1" loading="lazy" alt="" />
+      )}
+    </div>
+  )
+}
+
+{
+  aff && aff.found && !aff.banner && (
     <div class="aff-card">
       <div class="aff-card__body">
         <p class="aff-card__label">{aff.label}</p>
@@ -82,6 +101,23 @@ const aff = passed ?? (id ? resolveAff(id) : null);
     margin: 0;
     font-size: 0.8rem;
     opacity: 0.5;
+  }
+
+  .aff-card--banner {
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  .aff-card--banner img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--aff-radius, 4px);
+  }
+
+  .aff-card__pixel {
+    display: none;
   }
 
   @media (prefers-reduced-motion: reduce) {

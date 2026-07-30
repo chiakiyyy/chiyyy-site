@@ -7,7 +7,7 @@ import { getCollection, render } from "astro:content";
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
   return posts.map(post => ({
-    params: { slug: post.id.replace(/\.md$/, '') },
+    params: { slug: post.id.replace(/\.mdx?$/, '') },
     props: { post },
   }));
 }
@@ -83,7 +83,7 @@ const related = allPosts
           <p class="sidebar-label">RELATED</p>
           <div class="sidebar-related">
             {related.map(p => {
-              const s = p.id.replace(/\.md$/, '');
+              const s = p.id.replace(/\.mdx?$/, '');
               return (
                 <a href={`/blog/${s}/`} class="related-item">
                   <div class="related-thumb">

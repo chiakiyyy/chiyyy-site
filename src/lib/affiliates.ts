@@ -1,5 +1,13 @@
 import affiliatesData from '../data/affiliates.json';
 
+export interface AffBanner {
+  src: string;
+  width?: number;
+  height?: number;
+  /** ASPの表示回数計測用ピクセル(あれば)。1x1の透明画像として出力される */
+  impressionPixel?: string;
+}
+
 export interface AffItem {
   label: string;
   desc?: string;
@@ -11,6 +19,8 @@ export interface AffItem {
   endsAt?: string;
   status: 'active' | 'paused' | 'ended';
   note?: string;
+  /** ASP提供のバナー画像。あればテキストカードの代わりにこちらを表示 */
+  banner?: AffBanner;
 }
 
 export interface ResolvedAff {
@@ -20,6 +30,7 @@ export interface ResolvedAff {
   href: string | null;
   rel: string;
   live: boolean;
+  banner?: AffBanner;
 }
 
 const master = affiliatesData as Record<string, AffItem>;
@@ -64,6 +75,8 @@ export function resolveAff(id: string, labelOverride?: string): ResolvedAff {
     href,
     rel: live ? 'sponsored noopener' : 'noopener',
     live,
+    // バナーはASP提供の生きたリンクとセットの創作物なので、live時のみ出す
+    banner: live ? item.banner : undefined,
   };
 }
 

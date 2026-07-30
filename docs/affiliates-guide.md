@@ -27,6 +27,24 @@
 
 サンプルとして `oisix-otameshi`（掲載中）・`hario-kettle`（掲載中）・`sample-ended`（終了済み）の3件が入っています。実際の案件に差し替えるか、不要なら削除してください。
 
+### バナー画像を使う場合
+
+ASPから発行されたバナー画像（ロゴ等）をテキストカードの代わりに表示したいときは、`banner`を追加します。
+
+```json
+"case-id": {
+  ...,
+  "banner": {
+    "src": "https://ASPが発行したバナー画像のURL",
+    "width": 600,
+    "height": 600,
+    "impressionPixel": "https://ASPが発行した表示回数計測用の1x1画像URL（あれば）"
+  }
+}
+```
+
+`banner`があると、`AffCard`は文字のカードではなくこの画像を表示します（クリックで案件URLへ）。`impressionPixel`を入れておくと、ASP側の表示回数集計にも反映されます（成果・報酬の判定には影響しません）。`banner`を書かなければ今まで通りテキストカードのままです。
+
 ## 2. 記事に紐付ける
 
 記事のfrontmatターに `affiliates` と `pr` を追加するだけです。本文は今まで通り書けます。
@@ -45,7 +63,35 @@ pr: true
 - `affiliates`: 掲載したい案件IDの配列。複数指定可
 - `pr: true`: 広告表記（PRバッジ）を出す。`affiliates` を1件でも指定していれば `pr: true` も忘れずに（点検スクリプトが検知します）
 
-指定した案件は、記事本文の**末尾**にカード形式で自動的に並びます。本文中の好きな位置に差し込みたい場合は本文をMarkdownからMDXに変える必要があります（後述「今回やっていないこと」参照）。
+指定した案件は、記事本文の**末尾**にカード形式で自動的に並びます。
+
+## 2.5 本文中の好きな位置に差し込みたい場合（`.mdx`）
+
+記事ファイルの拡張子を `.md` ではなく `.mdx` にすると、本文中の好きな場所にリンクやカードを差し込めます。
+
+```mdx
+---
+title: "サンプル記事"
+affiliates: ["type-women-agent"]
+pr: true
+---
+
+import AffLink from '../../components/AffLink.astro';
+import AffCard from '../../components/AffCard.astro';
+
+前職で悩んでいた頃、<AffLink id="type-women-agent" /> に登録してみました。
+
+（本文の途中で、バナーやカードを大きく見せたいとき）
+
+<AffCard id="type-women-agent" />
+
+続きの本文...
+```
+
+- `<AffLink id="案件ID" />`: 文中の短いテキストリンク。案件名がそのままリンクテキストになる（`label="..."` で上書き可）。掲載中のリンクには自動で小さな「PR」マークが付く
+- `<AffCard id="案件ID" />`: カード（またはバナー画像）を、本文中の好きな位置に差し込む。frontmatterの`affiliates`で末尾に出るものと同じ部品
+
+`.md`のまま（frontmatterに`affiliates`を書くだけ）でも今まで通り使えます。本文に手を入れたくない記事は`.md`のままで問題ありません。
 
 ## 3. 案件を終了する
 
@@ -77,14 +123,14 @@ npm run check:affiliates:fetch    # 上記に加えて、実際にリンク先�
 | `src/lib/affiliates.ts` | `resolveAff(id)` / `needsPrNotice(frontmatter)` の実体。生死判定・フォールバック解決 |
 | `src/components/PrNotice.astro` | 広告表記バッジ。記事本文より上に自動表示 |
 | `src/components/AffCard.astro` | 記事末尾に自動で並ぶ、案件1件ぶんのカード |
-| `src/components/AffLink.astro` | 本文中インライン用（MDX導入後に使用。今は未使用） |
+| `src/components/AffLink.astro` | 本文中インライン用（`.mdx`記事で使用） |
 | `scripts/check-affiliates.mjs` | 定期点検スクリプト |
 | `src/pages/blog/[slug].astro` | `PrNotice` と `AffCard` を実際に記事ページへ組み込んでいる箇所 |
 
 ## 6. 今回やっていないこと（今後必要になったら）
 
 - **LinkSwitch（もしもアフィリエイト等の自動リンク化タグ）の導入**: ASPアカウント固有の埋め込みタグが必要なため、今回は組み込んでいません。導入する場合は `src/layouts/Layout.astro` の `</body>` 直前にASP指定のスクリプトタグを追加してください。導入後は、本文中の通常リンクも広告リンク化される可能性があるため、外部サイトへ直接リンクする記事では `pr: true` を明示してください。
-- **本文中への直接埋め込み（`<AffLink id="..." />`）**: 現在の記事は`.md`（Markdown）なので、Astroコンポーネントを本文中に直接書けません。使うには `@astrojs/mdx` を追加し、対象記事を `.mdx` に変更する必要があります。
+- **複数サービスの比較表コンポーネント**: 転職エージェント等、同テーマの案件が複数貯まってきたら追加を検討。
 - **台帳Excel（案件ごとの累計額・承認率の集計）**: 別途ご要望があれば作成します。
 
 ## 7. 公開前の注意

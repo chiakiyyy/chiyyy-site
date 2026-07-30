@@ -35,7 +35,7 @@ const posts = allPosts
       {posts.length > 0 ? (
         <div class="cat-grid">
           {posts.map(post => {
-            const s = post.id.replace(/\.md$/, '');
+            const s = post.id.replace(/\.mdx?$/, '');
             const d = post.data.pubDate.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
             return (
               <article class="cat-card">
