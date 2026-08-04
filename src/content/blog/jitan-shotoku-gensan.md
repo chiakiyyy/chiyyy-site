@@ -4,6 +4,7 @@ description: "時短復帰で手取りが下がると思ったら、むしろ増
 pubDate: 2026-08-04
 category: "お金・キャリア"
 tags: ["時短勤務", "育休", "手取り", "育児休業給付金", "家計管理", "ワーママ"]
+thumbnail: "/images/thumb-jitan-shotoku-gensan.png"
 draft: false
 ---
 
