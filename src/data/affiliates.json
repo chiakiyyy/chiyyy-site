@@ -53,6 +53,18 @@
       "impressionPixel": "https://i.moshimo.com/af/i/impression?a_id=5718712&p_id=7541&pc_id=21774&pl_id=94550"
     }
   },
+  "moneyforward-me": {
+    "label": "マネーフォワード ME",
+    "desc": "銀行・クレジット・証券を一元管理。我が家の家計管理はこれ一択です。",
+    "asp": "A8",
+    "url": "",
+    "fallbackUrl": "https://moneyforward.com/",
+    "reward": "334",
+    "startedAt": "2026-08-05",
+    "endsAt": "",
+    "status": "paused",
+    "note": "提携承認済み。トラッキングURLが発行されたらurlに設定、ASPのバナー素材URLをbannerフィールドに追加してstatusをactiveに変更。成果地点:新規会員登録¥334、24h以内プレミアム登録¥6,688。"
+  },
   "sample-ended": {
     "label": "終了した案件のサンプル",
     "desc": "",
