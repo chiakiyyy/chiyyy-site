@@ -4,7 +4,7 @@ description: "韓国コスメに毎月2万円、美容整形に60万円。承認
 pubDate: 2026-08-06
 category: "お金・キャリア"
 tags: ["浪費", "貯金", "美容費", "FIRE", "家計管理", "自己投資"]
-thumbnail: "/images/thumb-biyo-rouhi-chochiku.jpg"
+thumbnail: "/images/thumb-biyo-rouhi-chochiku.webp"
 affiliates: ["moneyforward-me"]
 draft: false
 ---
