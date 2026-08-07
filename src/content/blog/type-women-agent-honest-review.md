@@ -119,7 +119,7 @@ draft: false
 
 <mark>この質問に答えていくだけで、自然と自分の優先順位が見えてきます。</mark>職務経歴書も自己PRも、この段階では一切不要。
 
-<!-- スクショ：登録フォームの画像をここに追加してください（public/images/type-women-agent-form.png） -->
+![type女性の転職エージェント 登録フォーム（step 1/10）](/images/type-women-agent-form.png)
 
 ## こんな人におすすめ
 
