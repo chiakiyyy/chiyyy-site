@@ -15,12 +15,13 @@ interface Props {
 
 const { id, aff: passed } = Astro.props;
 const aff = passed ?? (id ? resolveAff(id) : null);
+const trackId = id ?? aff?.label ?? '';
 ---
 
 {
   aff && aff.found && aff.href && aff.banner && (
     <div class="aff-card aff-card--banner">
-      <a href={aff.href} rel={aff.rel} target="_blank">
+      <a href={aff.href} rel={aff.rel} target="_blank" data-aff-id={trackId} data-aff-label={aff.label}>
         <img
           src={aff.banner.src}
           width={aff.banner.width}
@@ -45,7 +46,7 @@ const aff = passed ?? (id ? resolveAff(id) : null);
       </div>
 
       {aff.href ? (
-        <a class="aff-card__cta" href={aff.href} rel={aff.rel} target="_blank">
+        <a class="aff-card__cta" href={aff.href} rel={aff.rel} target="_blank" data-aff-id={trackId} data-aff-label={aff.label}>
           くわしく見る
         </a>
       ) : (
@@ -54,6 +55,19 @@ const aff = passed ?? (id ? resolveAff(id) : null);
     </div>
   )
 }
+
+<script>
+  document.addEventListener('click', (e) => {
+    const link = (e.target as Element).closest('[data-aff-id]') as HTMLAnchorElement | null;
+    if (!link) return;
+    const affId = link.dataset.affId ?? '';
+    const affLabel = link.dataset.affLabel ?? '';
+    const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', 'aff_click', { aff_id: affId, aff_label: affLabel });
+    }
+  });
+</script>
 
 <style>
   .aff-card {
