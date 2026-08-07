@@ -4,7 +4,7 @@ Theme Name: 桑原司法書士事務所（Lightning）
 Template: lightning
 Author: A.T.WORKS
 Description: Lightning 子テーマ / BizVektor からの移行用
-Version: 3.2.0
+Version: 3.3.0
 Text Domain: kuwabara-shoshi
 */
 
@@ -190,8 +190,8 @@ button[type="submit"]:hover,
 /* ④ フッター全体を必ず全幅にする（Container の max-width を無効化） */
 .site-footer,
 .site-footer-copyright {
-	max-width: none;
-	width: 100%;
+	max-width: none !important;
+	width: 100% !important;
 }
 
 .site-footer {
@@ -209,10 +209,18 @@ button[type="submit"]:hover,
 	text-decoration: underline;
 }
 
+/* Copyright バー: コンテナ外へブレイクアウトして全幅表示
+   .site-footer-copyright が親コンテナ（950px）の内側にある場合でも
+   calc(50% - 50vw) の負マージンでビューポート幅まで広げる */
 .site-footer-copyright {
 	color: #fff;
 	background-color: var(--kw-bottom-bg);
 	border-top: 1px solid var(--kw-bottom-bg);
+	position: relative;
+	width: 100vw !important;
+	max-width: none !important;
+	margin-left: calc(50% - 50vw) !important;
+	box-sizing: border-box;
 }
 
 .site-footer-copyright a {
@@ -1001,6 +1009,12 @@ h1.page-header-title {
 	background-color: var(--kw-dark);
 	padding: 1.5em 0 1em;
 	border-top: 1px solid rgba(255, 255, 255, 0.2);
+	/* Copyright バーと同様にブレイクアウトして全幅表示 */
+	position: relative;
+	width: 100vw !important;
+	max-width: none !important;
+	margin-left: calc(50% - 50vw) !important;
+	box-sizing: border-box;
 }
 
 .kw-footer-office-name {
@@ -1014,7 +1028,7 @@ h1.page-header-title {
 .kw-footer-office-contact {
 	margin: 0;
 	font-size: 0.85rem;
-	color: #ccc;
+	color: #fff;
 	line-height: 1.8;
 }
 

@@ -436,52 +436,81 @@ function kw_pagetop_image_js() {
 			'#page-top', '.page-top',
 			'[id*="pagetop"]', '[class*="pagetop"]',
 			'[class*="back-to-top"]', '[class*="back_to_top"]',
-			'[class*="scroll-top"]', '[class*="scrolltop"]'
+			'[class*="scroll-top"]', '[class*="scrolltop"]',
+			'[aria-label*="先頭"]', '[aria-label*="top"]'
 		];
 
 		function applyImage( el ) {
-			el.style.setProperty( 'width',               '45px',        'important' );
-			el.style.setProperty( 'height',              '45px',        'important' );
-			el.style.setProperty( 'background-image',    'url("' + imgUrl + '")', 'important' );
-			el.style.setProperty( 'background-size',     '45px 45px',   'important' );
-			el.style.setProperty( 'background-repeat',   'no-repeat',   'important' );
-			el.style.setProperty( 'background-position', 'center',      'important' );
-			el.style.setProperty( 'background-color',    'transparent', 'important' );
-			el.style.setProperty( 'border',              'none',        'important' );
-			el.style.setProperty( 'border-radius',       '0',           'important' );
-			el.style.setProperty( 'box-shadow',          'none',        'important' );
+			/* 既に処理済みなら何もしない */
+			if ( el.querySelector( 'img.kw-pagetop-img' ) ) { return; }
 
-			/* 子要素を非表示（SVG・icon・テキスト） */
+			/* 既存の子要素（SVG・icon）を非表示 */
 			var children = el.querySelectorAll( '*' );
 			for ( var i = 0; i < children.length; i++ ) {
 				children[ i ].style.setProperty( 'display', 'none', 'important' );
 			}
+
+			/* footer_pagetop.png を img として直接挿入 */
+			var img = document.createElement( 'img' );
+			img.src    = imgUrl;
+			img.alt    = '';
+			img.width  = 45;
+			img.height = 45;
+			img.className = 'kw-pagetop-img';
+			img.style.cssText = 'display:block!important;width:45px!important;height:45px!important;max-width:none!important;margin:0!important;padding:0!important;border:none!important;';
+			el.appendChild( img );
+
+			/* コンテナを透明化・サイズ整合 */
+			el.style.setProperty( 'background',   'transparent', 'important' );
+			el.style.setProperty( 'border',        'none',        'important' );
+			el.style.setProperty( 'border-radius', '0',           'important' );
+			el.style.setProperty( 'box-shadow',    'none',        'important' );
+			el.style.setProperty( 'padding',        '0',          'important' );
+			el.style.setProperty( 'width',          '45px',       'important' );
+			el.style.setProperty( 'height',         '45px',       'important' );
+			el.style.setProperty( 'overflow',       'visible',    'important' );
+			el.style.setProperty( 'line-height',    '0',          'important' );
 		}
 
 		function fixAll() {
-			var found = {};
-			SELECTORS.forEach( function ( sel ) {
+			for ( var s = 0; s < SELECTORS.length; s++ ) {
 				try {
-					document.querySelectorAll( sel ).forEach( function ( el ) {
-						if ( ! found[ sel ] ) { found[ sel ] = true; }
-						applyImage( el );
-					} );
+					var nodes = document.querySelectorAll( SELECTORS[ s ] );
+					for ( var n = 0; n < nodes.length; n++ ) {
+						applyImage( nodes[ n ] );
+					}
 				} catch ( e ) {}
-			} );
+			}
 		}
 
+		/* 即時実行 */
+		fixAll();
 		if ( document.readyState === 'loading' ) {
 			document.addEventListener( 'DOMContentLoaded', fixAll );
-		} else {
-			fixAll();
 		}
 
-		/* ボタンが遅延表示される場合に備えて MutationObserver で監視 */
-		var observer = new MutationObserver( function () { fixAll(); } );
-		document.addEventListener( 'DOMContentLoaded', function () {
-			observer.observe( document.body, { childList: true, subtree: true, attributes: false } );
-			setTimeout( function () { observer.disconnect(); }, 15000 );
-		} );
+		/* スクロール時（VK ExUnit はスクロール後にボタンを表示） */
+		window.addEventListener( 'scroll', function onScroll() {
+			fixAll();
+			window.removeEventListener( 'scroll', onScroll );
+		}, { passive: true } );
+
+		/* MutationObserver: 動的追加 + style/class 変化を監視（30秒） */
+		var observer = new MutationObserver( fixAll );
+		function startObs() {
+			observer.observe( document.body, {
+				childList: true,
+				subtree: true,
+				attributes: true,
+				attributeFilter: [ 'style', 'class' ]
+			} );
+			setTimeout( function () { observer.disconnect(); }, 30000 );
+		}
+		if ( document.readyState === 'loading' ) {
+			document.addEventListener( 'DOMContentLoaded', startObs );
+		} else {
+			startObs();
+		}
 	})();
 	</script>
 	<?php
