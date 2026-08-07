@@ -415,3 +415,75 @@ function kw_pagetop_image_css() {
 </style>' . "\n";
 }
 add_action( 'wp_head', 'kw_pagetop_image_css' );
+
+
+/* ==========================================================================
+   ページトップへ戻るボタン JS 強制置換
+   --------------------------------------------------------------------------
+   CSS セレクタが一致しない場合のフォールバック。
+   DOM から固定配置のスクロールボタンを探し、JS で直接スタイルを当てる。
+   ========================================================================== */
+
+function kw_pagetop_image_js() {
+	$img_url = esc_url( get_stylesheet_directory_uri() . '/images/footer_pagetop.png' );
+	?>
+	<script>
+	(function () {
+		var imgUrl = <?php echo wp_json_encode( $img_url ); ?>;
+
+		var SELECTORS = [
+			'#vk_back_to_top', '.vk_back_to_top',
+			'#page-top', '.page-top',
+			'[id*="pagetop"]', '[class*="pagetop"]',
+			'[class*="back-to-top"]', '[class*="back_to_top"]',
+			'[class*="scroll-top"]', '[class*="scrolltop"]'
+		];
+
+		function applyImage( el ) {
+			el.style.setProperty( 'width',               '45px',        'important' );
+			el.style.setProperty( 'height',              '45px',        'important' );
+			el.style.setProperty( 'background-image',    'url("' + imgUrl + '")', 'important' );
+			el.style.setProperty( 'background-size',     '45px 45px',   'important' );
+			el.style.setProperty( 'background-repeat',   'no-repeat',   'important' );
+			el.style.setProperty( 'background-position', 'center',      'important' );
+			el.style.setProperty( 'background-color',    'transparent', 'important' );
+			el.style.setProperty( 'border',              'none',        'important' );
+			el.style.setProperty( 'border-radius',       '0',           'important' );
+			el.style.setProperty( 'box-shadow',          'none',        'important' );
+
+			/* 子要素を非表示（SVG・icon・テキスト） */
+			var children = el.querySelectorAll( '*' );
+			for ( var i = 0; i < children.length; i++ ) {
+				children[ i ].style.setProperty( 'display', 'none', 'important' );
+			}
+		}
+
+		function fixAll() {
+			var found = {};
+			SELECTORS.forEach( function ( sel ) {
+				try {
+					document.querySelectorAll( sel ).forEach( function ( el ) {
+						if ( ! found[ sel ] ) { found[ sel ] = true; }
+						applyImage( el );
+					} );
+				} catch ( e ) {}
+			} );
+		}
+
+		if ( document.readyState === 'loading' ) {
+			document.addEventListener( 'DOMContentLoaded', fixAll );
+		} else {
+			fixAll();
+		}
+
+		/* ボタンが遅延表示される場合に備えて MutationObserver で監視 */
+		var observer = new MutationObserver( function () { fixAll(); } );
+		document.addEventListener( 'DOMContentLoaded', function () {
+			observer.observe( document.body, { childList: true, subtree: true, attributes: false } );
+			setTimeout( function () { observer.disconnect(); }, 15000 );
+		} );
+	})();
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'kw_pagetop_image_js' );
