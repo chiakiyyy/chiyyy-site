@@ -4,6 +4,7 @@ description: "共働きなのにワンオペ。気が利かない夫に何度も
 pubDate: 2026-08-10
 category: "子育て・共働き"
 tags: ["ワンオペ", "夫婦", "共働き", "育児", "時短ライフハック"]
+thumbnail: "/images/thumb-wanope-tired.png"
 draft: false
 ---
 
