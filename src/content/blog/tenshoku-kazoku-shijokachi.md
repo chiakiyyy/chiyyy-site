@@ -4,6 +4,7 @@ description: "転職したいのに家族のために踏み出せない——そ
 pubDate: 2026-08-20
 category: "お金・キャリア"
 tags: ["転職", "転職できない", "市場価値", "家族持ち転職", "転職エージェント", "仕事の悩み"]
+thumbnail: "/images/thumb-tenshoku-kazoku-shijokachi.jpg"
 draft: false
 ---
 
