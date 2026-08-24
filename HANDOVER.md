@@ -8,21 +8,23 @@
 - **構成**: Astro / Cloudflare Pages
 - **デプロイ**: mainブランチにマージ → Cloudflare自動ビルド・公開
 - **作業ブランチ**: `claude/shared-session-21y970`（→ mainへのPRを通じて公開）
-- **記事数**: 12記事（2026-08-24時点）
+- **記事数**: 13記事（2026-08-24時点）
 
 ## 最近の作業（前セッション完了分）
 
-### 公開済み記事（ブランチにプッシュ済み・main未マージ）
-- `src/content/blog/job-dislike-family-cannot-change.md`
+### 公開済み・main反映済み
+- `src/content/blog/tenshoku-kazoku-shijokachi.md`（旧ファイル名 `job-dislike-family-cannot-change.md`）
   - タイトル: 「転職に踏み出せない人へ。「家族のため」という不安の正体と、最初にやること一つ」
   - カテゴリ: お金・キャリア
-  - ブランチ `claude/shared-session-21y970` にpush済み（SHA: eaf801b）
-  - **mainへのマージがまだ**
+  - 別セッションが並行してこの記事を追加し、**PR #33でmainにマージ済み**。本ブランチは別名の重複ファイルになっていたため、mainのファイル名・内容に合わせて統合済み
+- `wanope-tired-how-to-escape.md` のサムネイル
+  - 赤ちゃんが写らない位置で切り抜かれていた不具合を修正し、**PR #33でmain反映済み**
+  - 本ブランチが分岐していた時点の古い（修正前の）画像で上書きしないよう、マージ時にmain側を採用
 
 ## ペンディングタスク
 
 ### 1. JACリクルートメント・doda アフィリエイトリンク追加
-- `job-dislike-family-cannot-change.md` でJACリクルートメント・dodaをテキストで紹介中
+- `tenshoku-kazoku-shijokachi.md` でJACリクルートメント・dodaをテキストで紹介中
 - ASPからトラッキングURLを取得し、`affiliates.json` に追加 → AffCardコンポーネントで表示
 - 追加時は `affiliates.json` の既存フォーマット（type-women-agentなど）を参考に
 
