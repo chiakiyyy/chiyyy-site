@@ -1,6 +1,7 @@
 .env
-credentials.json
+service_account.json
 token.pickle
+credentials.json
 downloads/
 *.csv
 __pycache__/

@@ -5,7 +5,6 @@ MoneyForward ME → Google Sheets 転記
 
 import os
 import sys
-import pickle
 from datetime import date
 from pathlib import Path
 
@@ -277,36 +276,19 @@ def process_csv(csv_path: Path, start: date, end: date) -> dict:
 # ================================
 
 def get_gs_client():
-    """Google Sheets クライアント（OAuth2）"""
+    """Google Sheets クライアント（サービスアカウント）"""
     import gspread
-    from google_auth_oauthlib.flow import InstalledAppFlow
-    from google.auth.transport.requests import Request
 
-    SCOPES  = ['https://www.googleapis.com/auth/spreadsheets']
     here    = Path(__file__).parent
-    token_p = here / 'token.pickle'
-    creds_p = here / 'credentials.json'
-    creds   = None
+    key_p   = here / 'service_account.json'
 
-    if token_p.exists():
-        with open(token_p, 'rb') as f:
-            creds = pickle.load(f)
+    if not key_p.exists():
+        print("❌ service_account.json が見つかりません。")
+        print(f"   Google Cloud Console でサービスアカウントのJSONキーを作成し")
+        print(f"   {key_p} に保存してください。")
+        sys.exit(1)
 
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            if not creds_p.exists():
-                print("❌ credentials.json が見つかりません。")
-                print(f"   Google Cloud Console で OAuth2.0 認証情報を作成し")
-                print(f"   {creds_p} に保存してください。")
-                sys.exit(1)
-            flow  = InstalledAppFlow.from_client_secrets_file(str(creds_p), SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open(token_p, 'wb') as f:
-            pickle.dump(creds, f)
-
-    return gspread.authorize(creds)
+    return gspread.service_account(filename=str(key_p))
 
 
 def init_sheet(ws):
