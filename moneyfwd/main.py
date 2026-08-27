@@ -17,7 +17,7 @@ load_dotenv(Path(__file__).parent / '.env')
 # 設定
 # ================================
 
-SPREADSHEET_ID = os.getenv('SPREADSHEET_ID', '17uQcwl1bNyPNvccu8AfFW_wjXx7oyiQZzqsM9eVkvsI')
+SPREADSHEET_ID = os.getenv('SPREADSHEET_ID', '1NaJg34QU-hCuW4Ujxrg4c2357tpbyWsPoEOVgLLSkCA')
 SHEET_NAME     = '実績管理シート'
 
 FISCAL_START_YEAR  = 2026
