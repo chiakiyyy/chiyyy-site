@@ -20,9 +20,6 @@ load_dotenv(Path(__file__).parent / '.env')
 SPREADSHEET_ID = os.getenv('SPREADSHEET_ID', '1NaJg34QU-hCuW4Ujxrg4c2357tpbyWsPoEOVgLLSkCA')
 SHEET_NAME     = '実績管理シート'
 
-FISCAL_START_YEAR  = 2026
-FISCAL_START_MONTH = 4   # 4月始まり → E列
-
 # ================================
 # 日付計算
 # ================================
@@ -50,11 +47,6 @@ def detect_cycle_from_csv(csv_path: Path) -> tuple[date, date, str]:
 
     return start, end, f"{label_y}/{label_m:02d}"
 
-
-def col_for_month(year: int, month: int) -> int:
-    """年月 → スプレッドシート列番号（E=5 が Apr2026）"""
-    delta = (year - FISCAL_START_YEAR) * 12 + (month - FISCAL_START_MONTH)
-    return 5 + delta   # E列=5
 
 # ================================
 # カテゴリマッピング (MF大項目, MF中項目) → (費目, 詳細)
@@ -301,12 +293,38 @@ def init_sheet(ws):
     print(f"  {len(data)}行を初期化しました。")
 
 
-def update_sheet(result: dict, col: int, label: str):
+def find_col_for_month(ws, year: int, month: int) -> int | None:
+    """シートのヘッダー行（4行目）を読み、対象年月の列番号を返す"""
+    import re
+    row4 = ws.row_values(4)
+    for i, val in enumerate(row4, 1):
+        m = re.match(r'(\d{4})[./](\d{1,2})$', val.strip())
+        if m and int(m.group(1)) == year and int(m.group(2)) == month:
+            return i
+    return None
+
+
+def col_to_letter(col: int) -> str:
+    """列番号 → アルファベット（例: 5→E, 27→AA）"""
+    result = ''
+    while col:
+        col, rem = divmod(col - 1, 26)
+        result = chr(65 + rem) + result
+    return result
+
+
+def update_sheet(result: dict, year: int, month: int, label: str):
     gc = get_gs_client()
     sh = gc.open_by_key(SPREADSHEET_ID)
     ws = sh.worksheet(SHEET_NAME)
 
     init_sheet(ws)
+
+    col = find_col_for_month(ws, year, month)
+    if col is None:
+        print(f"⚠️ シートに {label} の列が見つかりません。")
+        print(f"   スプレッドシートの開始月を確認してください。")
+        return
 
     a_vals = ws.col_values(1)
     b_vals = ws.col_values(2)
@@ -314,7 +332,8 @@ def update_sheet(result: dict, col: int, label: str):
     for i, (a, b) in enumerate(zip(a_vals, b_vals)):
         row_map[(a.strip(), b.strip())] = i + 1
 
-    print(f"\n{chr(64+col)}列（{label}）を更新中...")
+    col_letter = col_to_letter(col)
+    print(f"\n{col_letter}列（{label}）を更新中...")
 
     updates = []
     for (fee, detail), amount in result.items():
@@ -325,7 +344,7 @@ def update_sheet(result: dict, col: int, label: str):
                     key = (a, b)
                     break
         if key in row_map:
-            cell = f'{chr(64+col)}{row_map[key]}'
+            cell = f'{col_letter}{row_map[key]}'
             updates.append({'range': cell, 'values': [[int(amount)]]})
 
     if updates:
@@ -362,15 +381,13 @@ def main():
 
     label_y = int(label.split('/')[0])
     label_m = int(label.split('/')[1])
-    col     = col_for_month(label_y, label_m)
 
     print(f"対象サイクル : {label}  ({start} 〜 {end})")
-    print(f"書き込み列   : {chr(64+col)}列")
 
     check_unmapped(csv_path)
 
     result = process_csv(csv_path, start, end)
-    update_sheet(result, col, label)
+    update_sheet(result, label_y, label_m, label)
 
 
 if __name__ == '__main__':
