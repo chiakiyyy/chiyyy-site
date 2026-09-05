@@ -24,6 +24,19 @@ SHEET_NAME     = '実績管理シート'
 # 日付計算
 # ================================
 
+def is_frontloaded_payday(D: date) -> bool:
+    """25日が土日の場合に前倒しされた給与日（23日または24日）かどうか"""
+    if D.day not in (23, 24):
+        return False
+    intended_25 = date(D.year, D.month, 25)
+    weekday_25 = intended_25.weekday()   # 0=月 … 5=土 6=日
+    if weekday_25 == 5 and D.day == 24:          # 土曜→前日(金)=24日
+        return True
+    if weekday_25 == 6 and D.day in (23, 24):    # 日曜→2日前(金)=23日
+        return True
+    return False
+
+
 def detect_cycle_from_csv(csv_path: Path) -> tuple[date, date, str]:
     """CSVの最古日付から25日締めサイクル（前月25日〜当月24日）を検出する"""
     df = pd.read_csv(csv_path, encoding='cp932')
@@ -252,15 +265,23 @@ def check_unmapped(csv_path: Path):
 # CSV 処理
 # ================================
 
-def process_csv(csv_path: Path, start: date, end: date) -> dict:
-    """CSVを処理して {(費目, 詳細): 金額} を返す"""
+def process_csv(csv_path: Path, start: date, end: date,
+                carry_in: dict | None = None) -> tuple[dict, dict]:
+    """
+    CSVを処理して (result, deferred) を返す。
+      result   : {(費目, 詳細): 金額}  今月分
+      deferred : {(費目, 詳細): 金額}  翌サイクルへ繰り越す前倒し給与
+    carry_in があれば前サイクルから繰り越された給与を今月に加算する。
+    """
     df = pd.read_csv(csv_path, encoding='cp932')
     df = df[df['計算対象'] == 1]
     df = df[df['振替'] == 0]
     df['日付'] = pd.to_datetime(df['日付'])
     df = df[(df['日付'].dt.date >= start) & (df['日付'].dt.date <= end)]
 
-    result = {}
+    result   = dict(carry_in) if carry_in else {}
+    deferred = {}
+
     for _, row in df.iterrows():
         major  = str(row['大項目']).strip()
         minor  = str(row['中項目']).strip() if pd.notna(row['中項目']) else ''
@@ -270,26 +291,38 @@ def process_csv(csv_path: Path, start: date, end: date) -> dict:
         if fee == '__skip__':
             continue
         if fee.startswith('❓'):
-            # 未定義カテゴリは特別な支出に自動振り分け（漏れ防止）
             print(f"  ⚠️ 未定義カテゴリ → 特別な支出として計上: {major}>{minor}  {row['内容']}  ¥{abs(amount):,.0f}")
             fee, detail = '❗️ 特別な支出', ''
 
         if major == '収入':
-            # 収入はプラス金額をそのまま集計
+            if amount <= 0:
+                continue
             key = (fee, detail)
+            # 給与・賞与は25日前倒しチェック（MF中項目が給与/賞与のみ対象）
+            if minor in ('給与', '賞与') and detail == '給与':
+                D = row['日付'].date()
+                if is_frontloaded_payday(D):
+                    print(f"  📅 前倒し給与を翌サイクルへ繰り越し: {D}  ¥{amount:,.0f}")
+                    deferred[key] = deferred.get(key, 0) + amount
+                    continue
             result[key] = result.get(key, 0) + amount
         else:
-            # 支出はマイナス金額のみ（プラスは振込など）
             if amount >= 0:
                 continue
             key = (fee, detail)
             result[key] = result.get(key, 0) + abs(amount)
 
+    if carry_in:
+        print(f"  💴 前サイクル繰り越し給与を加算: ¥{sum(carry_in.values()):,.0f}")
+
     print(f"\n【{start} 〜 {end} の集計】")
     for (fee, detail), amt in sorted(result.items()):
         print(f"  {(fee + ' ' + detail).strip():30s}  ¥{amt:>10,.0f}")
+    if deferred:
+        for (fee, detail), amt in deferred.items():
+            print(f"  → 翌サイクル繰り越し: {(fee + ' ' + detail).strip()}  ¥{amt:,.0f}")
 
-    return result
+    return result, deferred
 
 # ================================
 # Google Sheets 更新
@@ -399,29 +432,41 @@ def main():
     print(" MoneyForward CSV → Google Sheets 転記")
     print("=" * 50)
 
-    if len(sys.argv) < 2:
-        print("\n使い方: python main.py ダウンロードしたCSV.csv")
-        print("\nMoneyForwardからCSVをダウンロードして渡してください。")
-        print("月は自動で検出します（25日締め）。")
+    args = sys.argv[1:]
+
+    if not args:
+        print("\n使い方（1ファイル）: python main.py CSV.csv")
+        print("使い方（一括）    : python main.py csv1.csv csv2.csv ...")
+        print("\n複数ファイルは時系列順に渡すと25日前倒し給与を自動繰り越しします。")
         sys.exit(0)
 
-    csv_path = Path(sys.argv[1])
-    if not csv_path.exists():
-        print(f"❌ ファイルが見つかりません: {csv_path}")
-        sys.exit(1)
+    csv_paths = []
+    for a in args:
+        p = Path(a)
+        if not p.exists():
+            print(f"❌ ファイルが見つかりません: {p}")
+            sys.exit(1)
+        csv_paths.append(p)
 
-    print(f"\nCSV: {csv_path.name}")
-    start, end, label = detect_cycle_from_csv(csv_path)
+    # 時系列順にソート
+    csv_paths.sort(key=lambda p: detect_cycle_from_csv(p)[2])
 
-    label_y = int(label.split('/')[0])
-    label_m = int(label.split('/')[1])
+    carry: dict = {}
+    for csv_path in csv_paths:
+        print(f"\nCSV: {csv_path.name}")
+        start, end, label = detect_cycle_from_csv(csv_path)
+        label_y = int(label.split('/')[0])
+        label_m = int(label.split('/')[1])
 
-    print(f"対象サイクル : {label}  ({start} 〜 {end})")
+        print(f"対象サイクル : {label}  ({start} 〜 {end})")
+        check_unmapped(csv_path)
 
-    check_unmapped(csv_path)
+        result, carry = process_csv(csv_path, start, end, carry_in=carry)
+        update_sheet(result, label_y, label_m, label)
 
-    result = process_csv(csv_path, start, end)
-    update_sheet(result, label_y, label_m, label)
+    if carry:
+        print(f"\n⚠️ 最終CSVの後にまだ繰り越し給与があります: ¥{sum(carry.values()):,.0f}")
+        print("   翌月のCSVを追加で渡してください。")
 
 
 if __name__ == '__main__':
