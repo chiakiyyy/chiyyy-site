@@ -398,6 +398,10 @@ def update_sheet(result: dict, year: int, month: int, label: str):
     col_letter = col_to_letter(col)
     print(f"\n{col_letter}列（{label}）を更新中...")
 
+    # 書き込み前に列をクリア（古い実行のゴミ値を除去）
+    clear_range = f'{col_letter}5:{col_letter}{4 + len(SHEET_ROWS)}'
+    ws.batch_clear([clear_range])
+
     updates = []
     missing = []
     for (fee, detail), amount in result.items():
