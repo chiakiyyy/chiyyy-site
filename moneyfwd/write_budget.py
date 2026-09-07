@@ -1,6 +1,10 @@
 """
 予算計画シートへの書き込みスクリプト
 Q&Aで収集したデータを書き込む（一回限り実行）
+
+実行方法:
+  python write_budget.py          # 予算計画シートを更新
+  python write_budget.py --init-assets  # ライフプランシートに現在資産残高を設定
 """
 
 from pathlib import Path
@@ -103,5 +107,38 @@ def write_budget():
     print(f"   https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}")
 
 
+def init_assets(total_assets: int):
+    """
+    ライフプランシートに「現在の総資産残高」を設定し、
+    貯金額累計（行93）がその残高を起点に積み上がるよう数式を修正する。
+
+    引数:
+      total_assets: MoneyForwardの「資産」合計額（円）
+    """
+    gc = get_gs_client()
+    sh = gc.open_by_key(SPREADSHEET_ID)
+    ws = sh.worksheet('ライフプランシート')
+
+    # A22: ラベル / C22: 入力値
+    ws.update('A22:C22', [['📊 現在の総資産残高（今日時点）', '', total_assets]])
+    print(f"  A22に現在資産残高 ¥{total_assets:,} を設定しました")
+
+    # D93: 2026年の貯金累計を「当年の🏦貯金 + 初期資産残高」に変更
+    # 従来: =D90  →  変更後: =D90+C22
+    ws.update('D93', [['=D90+C22']], value_input_option='USER_ENTERED')
+    print("  D93の数式を =D90+C22 に更新しました")
+    print("  （E93以降は =E90+D93 のまま自動的に引き継がれます）")
+
+    print(f"\n✅ ライフプランシートの初期資産設定完了")
+    print(f"   https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}")
+    print(f"\n  2026年の「貯金額累計」= ¥{total_assets:,} + 2026年の貯金額")
+    print(f"  2027年以降は前年累計 + 当年貯金額で積み上がります")
+
+
 if __name__ == '__main__':
-    write_budget()
+    if '--init-assets' in sys.argv:
+        # MoneyForward の「資産」合計額を入力（MFアプリで確認した値）
+        CURRENT_TOTAL_ASSETS = 7_568_794  # ← MFの合計額を更新すること
+        init_assets(CURRENT_TOTAL_ASSETS)
+    else:
+        write_budget()
