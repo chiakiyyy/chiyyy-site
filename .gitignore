@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# moneyfwd
+moneyfwd/service_account.json
+moneyfwd/carry.json
+moneyfwd/downloads/

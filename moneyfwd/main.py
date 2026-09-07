@@ -427,6 +427,28 @@ def update_sheet(result: dict, year: int, month: int, label: str):
 # エントリポイント
 # ================================
 
+CARRY_FILE = Path(__file__).parent / 'carry.json'
+
+
+def load_carry() -> dict:
+    """前回繰り越し給与を carry.json から読み込む"""
+    import json
+    if not CARRY_FILE.exists():
+        return {}
+    with open(CARRY_FILE, encoding='utf-8') as f:
+        raw = json.load(f)
+    # JSON のキーは文字列なので tuple に戻す: "fee|||detail" → (fee, detail)
+    return {tuple(k.split('|||')): v for k, v in raw.items()}
+
+
+def save_carry(carry: dict):
+    """繰り越し給与を carry.json に保存する"""
+    import json
+    raw = {'|||'.join(k): v for k, v in carry.items()}
+    with open(CARRY_FILE, 'w', encoding='utf-8') as f:
+        json.dump(raw, f, ensure_ascii=False, indent=2)
+
+
 def main():
     print("=" * 50)
     print(" MoneyForward CSV → Google Sheets 転記")
@@ -435,9 +457,9 @@ def main():
     args = sys.argv[1:]
 
     if not args:
-        print("\n使い方（1ファイル）: python main.py CSV.csv")
-        print("使い方（一括）    : python main.py csv1.csv csv2.csv ...")
-        print("\n複数ファイルは時系列順に渡すと25日前倒し給与を自動繰り越しします。")
+        print("\n使い方: python main.py CSV.csv")
+        print("\n前月に25日前倒し給与があった場合は carry.json に自動保存され")
+        print("次回実行時に自動で翌月へ繰り越されます。")
         sys.exit(0)
 
     csv_paths = []
@@ -451,7 +473,11 @@ def main():
     # 時系列順にソート
     csv_paths.sort(key=lambda p: detect_cycle_from_csv(p)[2])
 
-    carry: dict = {}
+    # 前回の繰り越しを読み込む
+    carry = load_carry()
+    if carry:
+        print(f"\n📂 carry.json から前月繰り越し給与を読み込み: ¥{sum(carry.values()):,.0f}")
+
     for csv_path in csv_paths:
         print(f"\nCSV: {csv_path.name}")
         start, end, label = detect_cycle_from_csv(csv_path)
@@ -464,9 +490,16 @@ def main():
         result, carry = process_csv(csv_path, start, end, carry_in=carry)
         update_sheet(result, label_y, label_m, label)
 
+    # 繰り越しを保存（翌月の実行に引き継ぐ）
     if carry:
-        print(f"\n⚠️ 最終CSVの後にまだ繰り越し給与があります: ¥{sum(carry.values()):,.0f}")
-        print("   翌月のCSVを追加で渡してください。")
+        save_carry(carry)
+        print(f"\n💾 carry.json に繰り越し給与を保存: ¥{sum(carry.values()):,.0f}")
+        print("   翌月のCSVを実行すると自動で引き継がれます。")
+    else:
+        # 繰り越しなし → ファイルを削除してクリア
+        if CARRY_FILE.exists():
+            CARRY_FILE.unlink()
+            print("\n✅ 繰り越し給与なし（carry.json をクリア）")
 
 
 if __name__ == '__main__':
