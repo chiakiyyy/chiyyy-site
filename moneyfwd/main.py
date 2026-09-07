@@ -147,9 +147,9 @@ CAT = {
     # 現金・カード
     ('現金・カード', '使途不明金'):       ('💳 現金・カード', '使途不明金'),
     ('現金・カード', 'アドマック経費'):    ('__skip__',     ''),   # 事業経費
-    # その他（NISA → 株式投資）
-    ('その他', 'NISA'):                  ('💵 株式投資',   ''),
-    ('その他', '叶佳NISA'):              ('💵 株式投資',   ''),
+    # その他（NISA → 株式投資）※__nisa__は process_csv 内で積立枠/成長枠に分割
+    ('その他', 'NISA'):                  ('__nisa__',     ''),
+    ('その他', '叶佳NISA'):              ('💵 株式投資',   '叶佳'),
     # 収入
     ('収入', '給与'):                    ('💰 収入',       '給与'),
     ('収入', '賞与'):                    ('💰 収入',       '給与'),
@@ -234,7 +234,9 @@ SHEET_ROWS = [
     ('☕️ 交際費',      '',          '4 不定・変動'),
     ('❗️ 特別な支出',  '',          '4 不定・変動'),
     # ── 投資 ──────────────────────────────────────
-    ('💵 株式投資',    '',          '先取り貯蓄'),
+    ('💵 株式投資',    '積立枠',    '投資'),
+    ('💵 株式投資',    '成長枠',    '投資'),
+    ('💵 株式投資',    '叶佳',      '投資'),
 ]
 
 # ================================
@@ -281,8 +283,9 @@ def process_csv(csv_path: Path, start: date, end: date,
     df['日付'] = pd.to_datetime(df['日付'])
     df = df[(df['日付'].dt.date >= start) & (df['日付'].dt.date <= end)]
 
-    result   = dict(carry_in) if carry_in else {}
-    deferred = {}
+    result      = dict(carry_in) if carry_in else {}
+    deferred    = {}
+    nisa_amounts = []   # ('その他', 'NISA') エントリを一時収集して後で積立枠/成長枠に分割
 
     for _, row in df.iterrows():
         major  = str(row['大項目']).strip()
@@ -291,6 +294,9 @@ def process_csv(csv_path: Path, start: date, end: date,
 
         fee, detail = map_cat(major, minor)
         if fee == '__skip__':
+            continue
+        if fee == '__nisa__':
+            nisa_amounts.append(abs(amount))
             continue
         if fee.startswith('❓'):
             print(f"  ⚠️ 未定義カテゴリ → 特別な支出として計上: {major}>{minor}  {row['内容']}  ¥{abs(amount):,.0f}")
@@ -313,6 +319,13 @@ def process_csv(csv_path: Path, start: date, end: date,
                 continue
             key = (fee, detail)
             result[key] = result.get(key, 0) + abs(amount)
+
+    # NISA を積立枠（金額大）/ 成長枠（残り）に分割
+    if nisa_amounts:
+        nisa_sorted = sorted(nisa_amounts, reverse=True)
+        result[('💵 株式投資', '積立枠')] = result.get(('💵 株式投資', '積立枠'), 0) + nisa_sorted[0]
+        if len(nisa_sorted) > 1:
+            result[('💵 株式投資', '成長枠')] = result.get(('💵 株式投資', '成長枠'), 0) + sum(nisa_sorted[1:])
 
     if carry_in:
         print(f"  💴 前サイクル繰り越し給与を加算: ¥{sum(carry_in.values()):,.0f}")
@@ -347,13 +360,11 @@ def get_gs_client():
 
 
 def init_sheet(ws):
-    """行構造を初期化（A5が空のときのみ）"""
-    if ws.cell(5, 1).value:
-        return
-    print("スプレッドシートの行構造を初期化中...")
+    """行構造を更新（A:C列を常に最新のSHEET_ROWSで上書き）"""
+    print("スプレッドシートの行構造を更新中...")
     data = [[fee, detail, cls] for fee, detail, cls in SHEET_ROWS]
     ws.update(f'A5:C{4 + len(data)}', data)
-    print(f"  {len(data)}行を初期化しました。")
+    print(f"  {len(data)}行を書き込みました。")
 
 
 def find_col_for_month(ws, year: int, month: int) -> int | None:
