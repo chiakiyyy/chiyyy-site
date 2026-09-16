@@ -2,8 +2,9 @@
 title: 毎日の家計管理：簡単な記録方法と続けるコツ
 description: 「家計簿は続かない」という多くの女性へ。実は、複雑な家計簿は不要です。毎日の支出を「3つの項目」に分けて記録するだけで、家計の全体像が見える方法を解説します。
 pubDate: 2024-09-16
-heroImage: /daily-budget-tracking.jpg
-category: ライフスタイル
+category: "お金・キャリア"
+tags: ["家計管理", "家計簿", "節約", "貯金"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

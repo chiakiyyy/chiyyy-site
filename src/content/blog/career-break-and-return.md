@@ -2,8 +2,9 @@
 title: キャリアの中断と再開 - 育休後の復職現実と年収への影響
 description: 育休から復職した女性たちが直面する現実。キャリアが中断される理由、復職後の年収低下、転職による挽回戦略。実体験をもとに、人生設計の中での仕事復帰について解説します。
 pubDate: 2024-09-04
-heroImage: /career-break-return.jpg
-category: キャリア
+category: "お金・キャリア"
+tags: ["育休", "復職", "キャリア", "年収"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

@@ -2,8 +2,9 @@
 title: 転職vs昇進 - 年収を上げるなら、どちらを選ぶべきか
 description: 年収を上げるために「転職する」と「現職で昇進を目指す」、どちらが得か。実際の年収推移と、各キャリアパスのメリット・デメリットを比較し、最適な判断基準を解説します。
 pubDate: 2024-09-15
-heroImage: /job-change-promotion.jpg
-category: キャリア
+category: "お金・キャリア"
+tags: ["転職", "昇進", "年収アップ", "キャリア"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

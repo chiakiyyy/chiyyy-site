@@ -2,8 +2,9 @@
 title: 食費を削減しながら栄養を確保する - 月3万円で家族4人を養う実例
 description: 「栄養のためには高い食材が必要」は幻想です。実は、安い食材でも、組み合わせ方で栄養バランスを取ることは可能。月3万円で家族4人を健康に養う食事術を公開します。
 pubDate: 2024-09-17
-heroImage: /cost-effective-nutrition.jpg
-category: ライフスタイル
+category: "食・卵・富山"
+tags: ["食費", "節約", "栄養管理", "家計"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

@@ -2,8 +2,9 @@
 title: 地方移住vs都市生活 - ライフスタイルと年間支出で比較する人生選択
 description: 25～30代女性が迷う「大都市での生活と地方移住」。実は都市が必ずしも人生の最適解ではない。実際の家計例を用いて、地方移住のメリット・デメリット、選択基準を解説します。
 pubDate: 2024-09-03
-heroImage: /regional-living-choice.jpg
-category: ライフスタイル
+category: "地方移住・暮らし"
+tags: ["地方移住", "都市生活", "支出比較", "ライフスタイル"]
+draft: false
 ---
 
 こんにちは、Chiakiです。
