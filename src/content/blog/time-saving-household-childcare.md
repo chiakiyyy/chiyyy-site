@@ -2,8 +2,9 @@
 title: 時短家事と育児の両立テクニック - 1日2時間の家事で家族4人を養う
 description: ワーママの悩みの筆頭「時間がない」。しかし、その解決法は「完璧さを捨てる」ことです。1日2時間で家族4人の生活を回す、実践的なテクニックを公開します。
 pubDate: 2024-09-18
-heroImage: /time-saving-household.jpg
-category: ライフスタイル
+category: "子育て・共働き"
+tags: ["時短家事", "育児", "共働き", "家事効率化"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

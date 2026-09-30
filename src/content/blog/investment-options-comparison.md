@@ -2,8 +2,9 @@
 title: 資産運用の選択肢と利回り比較 - つみたてNISA、iDeCo、株式投資、どれを選ぶ
 description: 「資産運用」と聞くと難しそうですが、実は初心者向けの選択肢は限定的です。つみたてNISA、iDeCo、投資信託。各制度の利回りとメリット・デメリットを比較し、最適な選択基準を解説します。
 pubDate: 2024-09-14
-heroImage: /investment-options.jpg
-category: 資産運用
+category: "お金・キャリア"
+tags: ["つみたてNISA", "iDeCo", "株式投資", "資産運用"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

@@ -2,8 +2,9 @@
 title: 住宅ローンと資産形成 - 「家を買う」は人生最大の失敗か、成功か
 description: 「家を買うべき」という社会的プレッシャーに圧倒される女性たちへ。実は、30代で家を買うことが最適解とは限らない。ローン金利、投資リターン、ライフプランを数字で比較します。
 pubDate: 2024-09-07
-heroImage: /home-ownership-decision.jpg
-category: 資産運用
+category: "お金・キャリア"
+tags: ["住宅ローン", "マイホーム", "資産形成"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

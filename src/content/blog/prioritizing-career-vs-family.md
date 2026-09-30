@@ -2,8 +2,9 @@
 title: キャリアと家庭の優先順位 - 30代女性が直面する「選択」の本質
 description: 「キャリアも家庭も」という理想は幻想です。30代女性が直面する現実は「何かを優先する」という選択。その選択の軸となる考え方と、人生を後悔しない判断基準を解説します。
 pubDate: 2024-09-13
-heroImage: /career-family-priority.jpg
-category: キャリア
+category: "子育て・共働き"
+tags: ["キャリア", "家庭", "優先順位", "30代女性"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

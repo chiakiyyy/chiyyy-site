@@ -2,8 +2,9 @@
 title: キャリア形成と家計管理の現実 - 年収が高いだけでは資産は増えない理由
 description: 年収600万円でも貯金ができない人、年収400万円でも1000万円の資産を持つ人。その差は何か？キャリア形成と家計管理の両立について、実体験をもとに解説します。
 pubDate: 2024-09-01
-heroImage: /career-money-management.jpg
-category: 資産運用
+category: "お金・キャリア"
+tags: ["キャリア形成", "家計管理", "資産形成", "年収"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

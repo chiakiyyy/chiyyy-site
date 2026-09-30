@@ -2,8 +2,9 @@
 title: 親世代との経済格差 - 親族からの援助は「救い」か「罠」か
 description: バブル時代に資産を築いた親世代と、現在の若い世代では経済状況が大きく異なる。親からの金銭援助は本当に助けになるのか、それとも独立性を損なわせるのか。実例で解説します。
 pubDate: 2024-09-06
-heroImage: /generational-wealth-gap.jpg
-category: ライフスタイル
+category: "お金・キャリア"
+tags: ["経済格差", "親族からの援助", "資産形成"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

@@ -2,8 +2,9 @@
 title: 生命保険と家族の経済的保護 - 実際に必要な保障額の計算方法
 description: 生命保険は「入りすぎ」の人が圧倒的に多い。年収400万円で月4万円の保険、本当に必要ですか？実際の家計例をもとに、必要な保障額の正しい計算方法と、最適な保険選択を解説します。
 pubDate: 2024-09-05
-heroImage: /life-insurance-protection.jpg
-category: 資産運用
+category: "お金・キャリア"
+tags: ["生命保険", "家族の保障", "保険の見直し"]
+draft: false
 ---
 
 こんにちは、Chiakiです。

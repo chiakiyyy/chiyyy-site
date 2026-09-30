@@ -2,8 +2,9 @@
 title: 結婚相手の選び方 - 経済観念が合わない相手との人生は地獄
 description: 「愛していれば大丈夫」は幻想です。結婚生活で最も重要なのは「経済観念」の一致。給与、貯蓄、支出癖、人生設計。相性診断で確認すべき項目を解説します。
 pubDate: 2024-09-11
-heroImage: /choosing-partner.jpg
-category: ライフスタイル
+category: "お金・キャリア"
+tags: ["結婚相手", "経済観念", "価値観の違い", "夫婦"]
+draft: false
 ---
 
 こんにちは、Chiakiです。
