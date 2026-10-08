@@ -4,6 +4,7 @@ description: "転職や移住直後の妊娠、転職初日前の不安。出産
 pubDate: 2026-09-15
 category: "子育て・共働き"
 tags: ["妊娠", "出産", "育児", "富山移住", "夫婦"]
+thumbnail: "/images/thumb-pregnancy-childbirth-parenting-priorities.webp"
 draft: false
 ---
 
