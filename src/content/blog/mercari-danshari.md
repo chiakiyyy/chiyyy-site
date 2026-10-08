@@ -4,6 +4,7 @@ description: "夫の服でパンパンだったクローゼットをメルカリ
 pubDate: 2026-09-30
 category: "お金・キャリア"
 tags: ["メルカリ", "断捨離", "フリマアプリ", "副収入", "確定申告"]
+thumbnail: "/images/thumb-mercari-danshari.webp"
 draft: false
 ---
 
