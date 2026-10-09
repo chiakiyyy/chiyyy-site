@@ -220,6 +220,70 @@ const related = allPosts
   background: linear-gradient(transparent 55%, #ffc4d6 55%);
 }
 
+/* 小見出し（onimaga流：左バー＋太字。箱で囲まない） */
+.article-body :global(.sub-label) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 40px 0 18px;
+}
+
+.article-body :global(.sub-label-bar) {
+  flex: none;
+  width: 3px;
+  height: 1.1em;
+  background: var(--accent);
+}
+
+.article-body :global(.sub-label-text) {
+  font-weight: 600;
+  font-size: 1em;
+  color: var(--text);
+}
+
+.article-body :global(.sub-label) + :global(ul),
+.article-body :global(.sub-label) + :global(ol) {
+  margin-top: -0.6em;
+}
+
+/* 目次・まとめなど、情報をまとめて見せる用の枠（色は使わず線のみ） */
+.article-body :global(.info-box) {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 26px 28px;
+  margin: 40px 0;
+}
+
+.article-body :global(.info-box-label) {
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  color: var(--text-light);
+  margin: 0 0 14px;
+}
+
+.article-body :global(.info-box-title) {
+  font-family: var(--font-jp-serif);
+  font-size: 1.05em;
+  font-weight: 400;
+  color: var(--text);
+  margin: 0 0 16px;
+  letter-spacing: 0.03em;
+}
+
+.article-body :global(.info-box ul),
+.article-body :global(.info-box ol) {
+  margin-bottom: 0;
+  padding-left: 1.3em;
+}
+
+.article-body :global(.info-box li) {
+  margin-bottom: 0.6em;
+  font-size: 0.95em;
+  line-height: 1.85;
+}
+
+.article-body :global(.info-box li:last-child) { margin-bottom: 0; }
+
 .article-body :global(blockquote) {
   border-left: 2px solid var(--accent);
   padding: 12px 20px;
