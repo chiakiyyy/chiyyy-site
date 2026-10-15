@@ -4,6 +4,7 @@ description: "「都市に住まなきゃ」という思い込み、本当にそ
 pubDate: 2026-06-16
 category: "地方移住・暮らし"
 tags: ["地方移住", "都市生活", "支出比較", "ライフスタイル"]
+thumbnail: "/images/thumb-regional-living-options.webp"
 draft: false
 ---
 

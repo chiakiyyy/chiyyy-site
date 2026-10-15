@@ -4,6 +4,7 @@ description: "育児支援は「保育園に預ける」だけじゃない。祖
 pubDate: 2026-08-29
 category: "子育て・共働き"
 tags: ["保育園", "ベビーシッター", "育児費用", "子育て"]
+thumbnail: "/images/thumb-childcare-options-costs.webp"
 draft: false
 ---
 

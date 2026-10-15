@@ -4,6 +4,7 @@ description: "生命保険は「入りすぎ」の人が多いと言われます
 pubDate: 2026-06-22
 category: "お金・キャリア"
 tags: ["生命保険", "家族の保障", "保険の見直し"]
+thumbnail: "/images/thumb-life-insurance-family-protection.webp"
 draft: false
 ---
 

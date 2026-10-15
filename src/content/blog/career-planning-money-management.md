@@ -4,6 +4,7 @@ description: "年収が高いだけでは資産は増えない。年収600万円
 pubDate: 2026-06-10
 category: "お金・キャリア"
 tags: ["キャリア形成", "家計管理", "資産形成", "年収"]
+thumbnail: "/images/thumb-career-planning-money-management.webp"
 draft: false
 ---
 

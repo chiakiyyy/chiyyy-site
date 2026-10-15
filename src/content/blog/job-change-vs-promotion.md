@@ -4,6 +4,7 @@ description: "年収を上げたいとき「今の会社で昇進を目指す」
 pubDate: 2026-09-10
 category: "お金・キャリア"
 tags: ["転職", "昇進", "年収アップ", "キャリア"]
+thumbnail: "/images/thumb-job-change-vs-promotion.webp"
 draft: false
 ---
 
