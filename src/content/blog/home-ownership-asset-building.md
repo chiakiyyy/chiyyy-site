@@ -4,6 +4,7 @@ description: "「家を買うべき」という空気に流される前に。ロ
 pubDate: 2026-06-28
 category: "お金・キャリア"
 tags: ["住宅ローン", "マイホーム", "資産形成"]
+thumbnail: "/images/thumb-home-ownership-asset-building.webp"
 draft: false
 ---
 

@@ -4,6 +4,7 @@ description: "「お金が一番大事」という思い込みから少し離れ
 pubDate: 2026-10-06
 category: "健康・その他"
 tags: ["人生の優先順位", "価値観", "お金", "まとめ"]
+thumbnail: "/images/thumb-what-really-matters.webp"
 draft: false
 ---
 

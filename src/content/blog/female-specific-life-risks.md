@@ -4,6 +4,7 @@ description: "25〜30代女性が直面しうる「サンドイッチ世代」�
 pubDate: 2026-07-04
 category: "お金・キャリア"
 tags: ["介護", "老後", "女性のライフリスク", "資産形成"]
+thumbnail: "/images/thumb-female-specific-life-risks.webp"
 draft: false
 ---
 

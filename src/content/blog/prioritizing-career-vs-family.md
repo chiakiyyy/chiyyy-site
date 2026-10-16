@@ -4,6 +4,7 @@ description: "「キャリアも家庭も」という理想、現実にはそう
 pubDate: 2026-09-02
 category: "子育て・共働き"
 tags: ["キャリア", "家庭", "優先順位", "30代女性"]
+thumbnail: "/images/thumb-prioritizing-career-vs-family.webp"
 draft: false
 ---
 

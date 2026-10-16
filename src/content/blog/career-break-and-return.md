@@ -4,6 +4,7 @@ description: "育休から復職すると、年収やキャリアにどんな影
 pubDate: 2026-06-19
 category: "お金・キャリア"
 tags: ["育休", "復職", "キャリア", "年収"]
+thumbnail: "/images/thumb-career-break-and-return.webp"
 draft: false
 ---
 

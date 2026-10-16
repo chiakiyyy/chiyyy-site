@@ -4,6 +4,7 @@ description: "「栄養のためには高い食材が必要」と思い込んで
 pubDate: 2026-09-23
 category: "食・卵・富山"
 tags: ["食費", "節約", "栄養管理", "家計"]
+thumbnail: "/images/thumb-cost-effective-nutrition.webp"
 draft: false
 ---
 

@@ -4,6 +4,7 @@ description: "バブル時代に資産を築いた親世代と、今の若い世
 pubDate: 2026-06-25
 category: "お金・キャリア"
 tags: ["経済格差", "親族からの援助", "資産形成"]
+thumbnail: "/images/thumb-generational-wealth-gap.webp"
 draft: false
 ---
 

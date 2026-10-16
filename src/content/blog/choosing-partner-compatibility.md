@@ -4,6 +4,7 @@ description: "「愛していれば大丈夫」だけでは見落としがちな
 pubDate: 2026-08-26
 category: "お金・キャリア"
 tags: ["結婚相手", "経済観念", "価値観の違い", "夫婦"]
+thumbnail: "/images/thumb-choosing-partner-compatibility.webp"
 draft: false
 ---
 

@@ -4,6 +4,7 @@ description: "「家計簿は続かない」という人へ。複雑な家計簿
 pubDate: 2026-09-19
 category: "お金・キャリア"
 tags: ["家計管理", "家計簿", "節約", "貯金"]
+thumbnail: "/images/thumb-daily-budget-tracking.webp"
 draft: false
 ---
 

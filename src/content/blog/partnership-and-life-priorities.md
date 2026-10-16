@@ -4,6 +4,7 @@ description: "「結婚するか、キャリアを優先するか」という二
 pubDate: 2026-06-13
 category: "子育て・共働き"
 tags: ["パートナーシップ", "結婚", "出産", "キャリア"]
+thumbnail: "/images/thumb-partnership-and-life-priorities.webp"
 draft: false
 ---
 

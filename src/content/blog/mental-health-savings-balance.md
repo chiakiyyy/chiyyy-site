@@ -4,6 +4,7 @@ description: "「とにかく貯蓄を最大化したい」と思うあまり、
 pubDate: 2026-10-03
 category: "健康・その他"
 tags: ["心身の健康", "節約疲れ", "メンタルヘルス", "貯蓄"]
+thumbnail: "/images/thumb-mental-health-savings-balance.webp"
 draft: false
 ---
 

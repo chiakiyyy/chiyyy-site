@@ -4,6 +4,7 @@ description: "「資産運用」と聞くと難しそうだけど、初心者向
 pubDate: 2026-09-06
 category: "お金・キャリア"
 tags: ["つみたてNISA", "iDeCo", "株式投資", "資産運用"]
+thumbnail: "/images/thumb-investment-options-comparison.webp"
 draft: false
 ---
 
