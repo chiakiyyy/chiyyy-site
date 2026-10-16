@@ -1,0 +1,179 @@
+---
+/**
+ * 本の紹介カード（書影＋タイトル＋価格＋こんな人におすすめ＋購入ボタン）。
+ * 使い方（.md）: <BookCard id="book-kondo-tokimeku" />
+ * データは src/data/affiliates.json に登録し、resolveBookAff で解決する。
+ */
+import { resolveBookAff } from '../lib/affiliates';
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const book = resolveBookAff(id);
+---
+
+{
+  book.found && (
+    <div class="book-card">
+      {book.cover && (
+        <div class="book-card__cover">
+          <img src={book.cover} alt={book.label} loading="lazy" />
+        </div>
+      )}
+      <div class="book-card__body">
+        <p class="book-card__title">{book.label}</p>
+        {book.author && <p class="book-card__author">{book.author}</p>}
+        {book.price && (
+          <p class="book-card__price">¥{Number(book.price).toLocaleString()}（税込）</p>
+        )}
+        {book.desc && (
+          <div class="book-card__recommend">
+            <span class="book-card__recommend-label">こんな人におすすめ</span>
+            <p>{book.desc}</p>
+          </div>
+        )}
+        {book.href ? (
+          <a
+            class="book-card__cta"
+            href={book.href}
+            rel={book.rel}
+            target="_blank"
+            data-aff-id={id}
+            data-aff-label={book.label}
+          >
+            楽天市場でくわしく見る
+          </a>
+        ) : (
+          <p class="book-card__ended">現在このリンクは案内できません</p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<script>
+  document.addEventListener('click', (e) => {
+    const link = (e.target as Element).closest('[data-aff-id]') as HTMLAnchorElement | null;
+    if (!link) return;
+    const affId = link.dataset.affId ?? '';
+    const affLabel = link.dataset.affLabel ?? '';
+    const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', 'aff_click', { aff_id: affId, aff_label: affLabel });
+    }
+  });
+</script>
+
+<style>
+  .book-card {
+    display: flex;
+    gap: 1.25rem;
+    margin-block: 1.5rem;
+    padding: 1.25rem;
+    border: 1px solid var(--aff-border, var(--border));
+    border-radius: var(--aff-radius, 4px);
+    background: var(--aff-bg, var(--bg-white));
+  }
+
+  .book-card__cover {
+    flex: 0 0 108px;
+  }
+
+  .book-card__cover img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(42, 37, 32, 0.12);
+  }
+
+  .book-card__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .book-card__title {
+    margin: 0 0 0.2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  .book-card__author {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-mid);
+  }
+
+  .book-card__price {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .book-card__recommend {
+    margin: 0 0 0.9rem;
+    padding: 0.6rem 0.85rem;
+    border-left: 3px solid var(--accent);
+    background: var(--bg);
+  }
+
+  .book-card__recommend-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .book-card__recommend p {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.75;
+    color: var(--text-mid);
+  }
+
+  .book-card__cta {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--aff-radius, 4px);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+  }
+
+  .book-card__cta:hover {
+    opacity: 0.65;
+  }
+
+  .book-card__ended {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.5;
+  }
+
+  @media (max-width: 480px) {
+    .book-card {
+      gap: 0.9rem;
+      padding: 1rem;
+    }
+
+    .book-card__cover {
+      flex-basis: 78px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .book-card__cta {
+      transition: none;
+    }
+  }
+</style>
