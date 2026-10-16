@@ -21,6 +21,10 @@ export interface AffItem {
   note?: string;
   /** ASP提供のバナー画像。あればテキストカードの代わりにこちらを表示 */
   banner?: AffBanner;
+  /** BookCard用。書影URL・著者名・税込価格（円） */
+  cover?: string;
+  author?: string;
+  price?: string;
 }
 
 export interface ResolvedAff {
@@ -83,4 +87,22 @@ export function resolveAff(id: string, labelOverride?: string): ResolvedAff {
 /** pr: true か、affiliates が1件以上指定されていれば広告表記が必要 */
 export function needsPrNotice(frontmatter: { pr?: boolean; affiliates?: string[] }): boolean {
   return !!frontmatter.pr || !!(frontmatter.affiliates && frontmatter.affiliates.length > 0);
+}
+
+export interface ResolvedBookAff extends ResolvedAff {
+  author?: string;
+  cover?: string;
+  price?: string;
+}
+
+/** BookCard用。resolveAff に書影・著者・価格を足して返す */
+export function resolveBookAff(id: string): ResolvedBookAff {
+  const item = master[id];
+  const base = resolveAff(id);
+  return {
+    ...base,
+    author: item?.author,
+    cover: item?.cover,
+    price: item?.price,
+  };
 }

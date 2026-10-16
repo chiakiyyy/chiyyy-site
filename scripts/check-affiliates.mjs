@@ -128,8 +128,8 @@ if (existsSync(POSTS_DIR)) {
     const src = await readFile(file, 'utf8');
     const fm = parseFrontmatter(src);
 
-    // .mdx で <AffLink id="..."> を直書きしている分も拾う
-    const inlineIds = [...src.matchAll(/<Aff(?:Link|Card)\s+[^>]*id=["']([^"']+)["']/g)]
+    // .mdx で <AffLink id="..."> / <AffCard id="..."> / <BookCard id="..."> を直書きしている分も拾う
+    const inlineIds = [...src.matchAll(/<(?:Aff(?:Link|Card)|BookCard)\s+[^>]*id=["']([^"']+)["']/g)]
       .map((m) => m[1]);
 
     const ids = [...new Set([...(fm?.affiliates ?? []), ...inlineIds])];
