@@ -41,8 +41,9 @@ const categories = Object.keys(catMap)
 const fmt = (d: Date) => d.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
 const slugOf = (p: typeof posts[number]) => p.id.replace(/\.mdx?$/, '');
 
-// ティッカーの速度を記事数に比例させる（件数が増えても体感速度を一定に保つ）
-const tickerDuration = Math.max(20, posts.length * 2.2);
+// ティッカーは全記事ではなく人気記事(ranking)上位5件のみを流す
+const tickerPosts = ranking;
+const tickerDuration = Math.max(20, tickerPosts.length * 2.2);
 ---
 
 <Layout title="chiyyy.com" description="転職、妊活、地方移住。キャリアとライフスタイルの変化に悩む女性へ贈る、ちーの実体験ブログ。たまに美容の話も。">
@@ -54,8 +55,8 @@ const tickerDuration = Math.max(20, posts.length * 2.2);
     </div>
     <div class="hero-ticker">
       <div class="ticker-inner" style={`--ticker-duration: ${tickerDuration}s`}>
-        {[...posts, ...posts].map((p, i) => (
-          <a href={`/blog/${slugOf(p)}/`} class="ticker-item" aria-hidden={i >= posts.length ? "true" : undefined}>
+        {[...tickerPosts, ...tickerPosts].map((p, i) => (
+          <a href={`/blog/${slugOf(p)}/`} class="ticker-item" aria-hidden={i >= tickerPosts.length ? "true" : undefined}>
             <span class="ticker-cat">{p.data.category}</span>
             <span class="ticker-title">{p.data.title}</span>
           </a>
