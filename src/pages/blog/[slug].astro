@@ -13,8 +13,16 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { title, description, pubDate, category, tags, thumbnail } = post.data;
+const { title, description, pubDate, category, tags, thumbnail, videoUrl } = post.data;
 const { Content } = await render(post);
+
+// YouTube動画URL(watch?v=, youtu.be/, shorts/)から埋め込み用IDを取り出す
+function youtubeEmbedId(url?: string): string | null {
+  if (!url) return null;
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{11})/);
+  return m ? m[1] : null;
+}
+const videoId = youtubeEmbedId(videoUrl);
 
 const dateStr = pubDate.toLocaleDateString('ja-JP', {
   year: 'numeric', month: 'long', day: 'numeric'
@@ -40,7 +48,17 @@ const related = allPosts
         </div>
       </header>
 
-      {thumbnail && (
+      {videoId ? (
+        <div class="article-video">
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}`}
+            title={title}
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          />
+        </div>
+      ) : thumbnail && (
         <figure class="article-thumb">
           <img src={thumbnail} alt={title} width="700" height="450" loading="lazy" />
         </figure>
@@ -121,6 +139,21 @@ const related = allPosts
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.article-video {
+  width: 100%;
+  max-width: 700px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+  margin: 0 0 40px;
+}
+
+.article-video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .article-outer {

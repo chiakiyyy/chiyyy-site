@@ -14,6 +14,9 @@ const blog = defineCollection({
     draft: z.boolean().optional().default(false),
     affiliates: z.array(z.string()).optional(),
     pr: z.boolean().optional().default(false),
+    articleType: z.enum(["diary", "leadgen", "review", "hub", "video"]).optional(),
+    videoUrl: z.string().optional(),
+    videoSeries: z.enum(["ひとりの夜", "ふたりの夜", "みんなの食卓"]).optional(),
   }),
 });
 
