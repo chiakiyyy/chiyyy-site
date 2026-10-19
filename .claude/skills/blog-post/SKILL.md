@@ -14,7 +14,7 @@ chiyyy.com（Astro製・Cloudflare Pages・Chiaki本人の実体験ベースの�
 - 記事の保存先: `src/content/blog/{スラッグ}.md`（本文中に差し込み型のアフィリエイトリンクを使う場合のみ `.mdx`。詳細は後述）
 - **ファイル名には必ず `.md`（または `.mdx`）拡張子を付ける**。コンテンツ収集パターンが `**/*.{md,mdx}` のため、拡張子が無いと記事がサイトに表示されない（過去に発生した不具合）。
 - コンテンツスキーマ（`src/content.config.ts`）の frontmatter フィールド:
-  `title`(必須) / `description`(必須) / `pubDate`(必須) / `category`(必須) / `tags`(任意) / `thumbnail`(任意) / `featured`(任意,既定false) / `draft`(任意,既定false) / `affiliates`(任意,案件IDの配列) / `pr`(任意,既定false,広告表記の要否)
+  `title`(必須) / `description`(必須) / `pubDate`(必須) / `category`(必須) / `tags`(任意) / `thumbnail`(任意) / `featured`(任意,既定false) / `draft`(任意,既定false) / `affiliates`(任意,案件IDの配列) / `pr`(任意,既定false,広告表記の要否) / `articleType`(任意,"diary"|"leadgen"|"review"|"hub"|"video") / `videoUrl`(任意,動画連動記事のYouTube URL) / `videoSeries`(任意,"ひとりの夜"|"ふたりの夜"|"みんなの食卓")
 - 記事内容はあくまでChiaki本人の実体験の参考記録。生成文章の事実確認・著作権・最終的な公開可否の判断は本人が行う。必要に応じてその旨に触れてよい。
 - **アフィリエイトリンクの仕組みは [`docs/affiliates-guide.md`](../../../docs/affiliates-guide.md) を参照**。案件マスタは `src/data/affiliates.json`。本スキルでは「いつ・どの記事で使うか」の判断のみ扱う。
 
@@ -51,8 +51,10 @@ chiyyy.com（Astro製・Cloudflare Pages・Chiaki本人の実体験ベースの�
 | **日記記事** | 実体験の記録・読者との信頼構築 | 素の日記トーン。基本は今まで通り |
 | **集客記事** | 検索流入でアクセスを集める | 読者の悩み解決が主目的。ロングテールキーワード（3語以上の検索語）を意識したタイトル・見出しにする |
 | **レビュー・収益記事** | 商品/サービスへの誘導・成約 | `src/data/affiliates.json` の案件と紐付け、`affiliates`/`pr` frontmatterを使う |
+| **動画連動記事** | YouTubeレシピ動画との相互送客・ファン化 | 動画で語らない「なぜ」を書く。`articleType: "video"` + `videoUrl`/`videoSeries` frontmatterを使う。詳細は[`notes/blog-video-strategy.md`](../../../notes/blog-video-strategy.md) |
 
 「まとめ記事作って」と言われた場合は、下記【まとめ記事（ハブ記事）を作る場合】の手順に切り替える。
+「動画の記事を作って」「○○の動画のブログ記事」と言われた場合は、下記【動画連動記事を作る場合】の手順に切り替える。
 
 ## 手順1：テーマのヒアリング
 
@@ -132,6 +134,31 @@ draft: false           # 文章確認後に作成するため公開状態(false)
 - **詳細を書きすぎない**：詳しい内容は詳細記事に譲り、まとめ記事は簡潔に。
 - frontmatterは通常記事と同じ。`category`はそのテーマが属するカテゴリを選ぶ。
 
+## 動画連動記事を作る場合
+
+YouTubeのレシピ動画（ひとりの夜／ふたりの夜／みんなの食卓シリーズ）に紐づく記事。背景・方針の詳細は [`notes/blog-video-strategy.md`](../../../notes/blog-video-strategy.md) を参照。
+
+**構成テンプレート**（この順）：
+1. 動画埋め込み（frontmatterの`videoUrl`を設定すれば自動表示されるので、本文では触れなくてよい）
+2. 体験談（なぜこの料理・このタイミングだったか。動画がノー言語なので、ここで「なぜ」を言語化する）
+3. 気持ちの話（そのときの感情、料理を作る/食べる過程での変化）
+4. 商材1〜2点（任意。`notes/blog-video-strategy.md`の「記事タイプ×商材」表に従う。実際に使った物だけ）
+
+**ヒアリング**：通常の体験談観点（手順1の1〜7）をベースに聞く。体験と感情の部分はAIが作り話で埋めず、必ず本人から聞き取る。足りない部分は質問で補う。
+
+**frontmatterの追加項目**：
+```yaml
+articleType: "video"
+videoUrl: "https://youtube.com/watch?v=..."
+videoSeries: "ひとりの夜"   # | "ふたりの夜" | "みんなの食卓"
+```
+
+**守ること**（`notes/blog-video-strategy.md`より）：
+- 実在の俳優名・特定できる人物名は出さない
+- 上司や職場への不満は特定されない範囲にぼかす
+- 商材は「自分の機嫌をとる道具」の文脈で紹介し、使っていない物は紹介しない
+- 「まとめ」見出しや定型の締めは使わない（エッセイ系と同じ）
+
 ## 手順4：ファイル作成
 
 ユーザーが「OK」「これでいい」等で承認したら、ファイルを作成する。この時点で文章は確認済みなので、記事は公開状態（`draft: false`）で作成する（手順6参照）。
@@ -163,4 +190,5 @@ draft: false           # 文章確認後に作成するため公開状態(false)
 - `notes/blog-monetization-notes.md`：SEO・キーワード選定・記事の型の詳しい背景（リベ大ブログ教室を参考に独自にまとめたもの）
 - `notes/site-strategy-2026-09.md`：サイト全体の運営方針・ターゲット・収益化ロードマップ
 - `notes/article-style-guide.md`：記事のあしらい・文章の作り方のルール（onimaga.jpを参考に整理）
+- `notes/blog-video-strategy.md`：ブログ×動画戦略（ファン化の方針、動画シリーズ、商材配置ルール）
 - `docs/affiliates-guide.md`：アフィリエイトリンクの実装・運用の仕組み
